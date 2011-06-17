@@ -4,6 +4,9 @@
   <artifactId>urldispatcher</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
+  <scm>
+  	<url>https://dahool@github.com/dahool/urldispatcher.git</url>
+  </scm>
   <organization>
   	<name>SGT</name>
   </organization>
