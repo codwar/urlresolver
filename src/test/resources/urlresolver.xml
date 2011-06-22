@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../main/resources/urlresolver.xsd">
+  <dispatcher class="TestProcessor1">
+    <rule name="rule1" uri="^(?P(slug)[-\w]+)/detail/$"/>
+  </dispatcher>
+  <dispatcher class="TestProcessor2">
+    <rule uri="^detail/$"/>
+  </dispatcher>  
+</config>

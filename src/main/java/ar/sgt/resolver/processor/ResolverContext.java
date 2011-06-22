@@ -1,16 +1,15 @@
 /**
- *   JIPDBS
- *   Copyright(c) 2011 Martin Schonaker
+ *   ResolverContext
  *   Copyright(c) 2011 Sergio Gabriel Teves
  * 
- *   This file is part of JIPDBS.
+ *   This file is part of UrlResolver.
  *
- *   JIPDBS is free software: you can redistribute it and/or modify
+ *   UrlResolver is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
  *
- *   JIPDBS is distributed in the hope that it will be useful,
+ *   UrlResolver is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
@@ -18,7 +17,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with JIPDBS. If not, see <http://www.gnu.org/licenses/>.
  */
-package ar.sgt.web.servlet;
+package ar.sgt.resolver.processor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,24 +25,24 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ar.sgt.web.listener.Context;
+import ar.sgt.resolver.listener.Context;
 
 /**
  * @author gabriel
  *
  */
-public final class ServletContext implements Context {
+public final class ResolverContext implements Context {
 	
 	private Map<String, String> parameters;
 	private HttpServletRequest req;
 	private HttpServletResponse resp;
 	private String method;
 
-	public ServletContext(HttpServletRequest req, HttpServletResponse resp, String method) {
+	public ResolverContext(HttpServletRequest req, HttpServletResponse resp, String method) {
 		this(req, resp, new HashMap<String, String>(), method);
 	}
 	
-	public ServletContext(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params, String method) {
+	public ResolverContext(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params, String method) {
 		this.parameters = params;
 		this.req = req;
 		this.resp = resp;

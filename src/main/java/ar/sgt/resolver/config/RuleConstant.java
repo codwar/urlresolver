@@ -1,16 +1,15 @@
 /**
- *   JIPDBS
- *   Copyright(c) 2011 Martin Schonaker
+ *   RuleConstant
  *   Copyright(c) 2011 Sergio Gabriel Teves
  * 
- *   This file is part of JIPDBS.
+ *   This file is part of UrlResolver.
  *
- *   JIPDBS is free software: you can redistribute it and/or modify
+ *   UrlResolver is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation, either version 3 of the License, or
  *   (at your option) any later version.
  *
- *   JIPDBS is distributed in the hope that it will be useful,
+ *   UrlResolver is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
@@ -18,19 +17,15 @@
  *   You should have received a copy of the GNU General Public License
  *   along with JIPDBS. If not, see <http://www.gnu.org/licenses/>.
  */
-package ar.sgt.web.servlet;
+package ar.sgt.resolver.config;
 
-import java.io.Serializable;
+public interface RuleConstant {
 
-/**
- * @author gabriel
- *
- */
-public abstract class Controller implements Serializable {
+	public static final String NODE_DISPATCHER = "dispatcher";
+	public static final String NODE_RULE = "rule";
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4776195500451705047L;
+	public static final String ATT_CLASS = "class";
+	public static final String ATT_URI = "uri";
+	public static final String ATT_NAME = "name";
 	
 }

@@ -20,14 +20,7 @@
 
 	<xs:complexType name="ruleType">
 		<xs:attribute name="uri" type="xs:string" use="required" />
-		<xs:attribute name="match-type" type="matchType" use="optional" />
+		<xs:attribute name="name" type="xs:string" use="optional" />
 	</xs:complexType>
-
-	<xs:simpleType name="matchType">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="regexp" />
-			<xs:enumeration value="wildcard" />
-		</xs:restriction>
-	</xs:simpleType>
 
 </xs:schema>
