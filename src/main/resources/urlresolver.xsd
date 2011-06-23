@@ -4,14 +4,14 @@
 	<xs:element name="config">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="dispatcher" type="dispatcherType"
+				<xs:element name="processor" type="processorType"
 					maxOccurs="unbounded" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
 
-	<xs:complexType name="dispatcherType">
+	<xs:complexType name="processorType">
 		<xs:sequence>
 			<xs:element name="rule" type="ruleType" maxOccurs="unbounded" />
 		</xs:sequence>

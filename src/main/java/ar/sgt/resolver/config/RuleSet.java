@@ -55,7 +55,7 @@ public final class RuleSet {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder("<ruleset>");
+		StringBuilder builder = new StringBuilder("<ruleset>\n");
 		for (Rule rule : this.rules.values()) {
 			builder.append(rule.toString());
 		}

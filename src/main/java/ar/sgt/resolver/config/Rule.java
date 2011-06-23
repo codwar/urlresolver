@@ -79,10 +79,10 @@ public final class Rule {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder("<rule>");
-		builder.append("<processor>").append(this.processor).append("</processor>");
-		builder.append("<uri>").append(this.uri).append("</uri>");
-		builder.append("</rule>");
+		StringBuilder builder = new StringBuilder("<rule>\n");
+		builder.append("<processor>").append(this.processor).append("</processor>\n");
+		builder.append("<uri>").append(this.uri).append("</uri>\n");
+		builder.append("</rule>\n");
 		return builder.toString();
 	}
 

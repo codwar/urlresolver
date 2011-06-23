@@ -20,6 +20,7 @@
 package ar.sgt.resolver.listener;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
@@ -32,8 +33,11 @@ import ar.sgt.resolver.config.ResolverConfig;
  */
 public final class ContextLoader {
 
+	private static final Logger log = Logger.getLogger(ContextLoader.class.getName());
+	
 	public static final String RESOLVER_CONFIG = "RESOLVER_CONFIG";
-
+	public static final String APPEND_BACKSLASH = "APPEND_BACKSLASH";
+	public static final String CONFIG_LOCATION_PARAM = "resolverConfigLocation";
 	public static final String DEFAULT_WEB_CONF_PATH = "/WEB-INF/urlresolver.xml";
 
 	private ResolverConfig resolverConfig;
@@ -43,13 +47,16 @@ public final class ContextLoader {
 	 * @throws Exception 
 	 */
 	public void initWebContext(ServletContext servletContext) {
+		String configFile = servletContext.getInitParameter(CONFIG_LOCATION_PARAM) != null ? servletContext.getInitParameter(CONFIG_LOCATION_PARAM) : DEFAULT_WEB_CONF_PATH;
+		log.fine("Loading config from " + configFile);
 		ConfigParser configParser = new ConfigParser();
 		try {
-			resolverConfig = configParser.parse(new File(DEFAULT_WEB_CONF_PATH));
+			resolverConfig = configParser.parse(new File(servletContext.getResource(configFile).getFile()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		servletContext.setAttribute(RESOLVER_CONFIG, resolverConfig);
+		servletContext.setAttribute(APPEND_BACKSLASH, servletContext.getInitParameter(APPEND_BACKSLASH) != null ? Boolean.parseBoolean(servletContext.getInitParameter(APPEND_BACKSLASH)) : true);
 	}
 
 	/**

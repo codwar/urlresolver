@@ -20,6 +20,7 @@
 package ar.sgt.resolver.servlet;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -36,18 +37,25 @@ import ar.sgt.resolver.processor.ResolverContext;
  * @author gabriel
  *
  */
-public class UrlResolver extends HttpServlet {
+public class ResolverServlet extends HttpServlet {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3919737317543290653L;
 
+	private static final Logger log = Logger.getLogger(ResolverServlet.class.getName());
+	
 	private ResolverConfig resolverConfig;
+	private boolean appendBackSlash;
+	private boolean debug;
 	
 	@Override
 	public void init() throws ServletException {
+		log.fine("Initializing servlet");
 		resolverConfig = (ResolverConfig) getServletContext().getAttribute(ContextLoader.RESOLVER_CONFIG);
+		appendBackSlash = getServletConfig().getInitParameter("append_backslash") != null ? Boolean.parseBoolean(getServletConfig().getInitParameter("append_backslash")) : true;
+		debug = getServletConfig().getInitParameter("debug") != null ? Boolean.parseBoolean(getServletConfig().getInitParameter("debug")) : false;
 	}
 	
 	/* (non-Javadoc)
@@ -59,24 +67,34 @@ public class UrlResolver extends HttpServlet {
 		resolveProcessor(req, resp, ResolverContext.METHOD_GET);
 	}
 
-	private void resolveProcessor(HttpServletRequest req, HttpServletResponse resp, String method) {
+	private void resolveProcessor(HttpServletRequest req, HttpServletResponse resp, String method) throws ServletException {
 		String path = req.getRequestURI();
+		if (appendBackSlash) {
+			if (!path.endsWith("/")) path = path + "/";
+		}
+		log.fine("Resolve path: " + path);
 		Rule rule = resolverConfig.findRule(path);
 		if (rule != null) {
+			log.fine("Found rule: " + rule.getProcessor());
 			ResolverContext context = new ResolverContext(req, resp, rule.parseParams(), method);
 			Processor processor;
 			try {
 				processor = loadClass(rule.getProcessor());
 				processor.doProcess(context);
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception e) {
+				log.severe(e.getMessage());
+				throw new ServletException(e);
+			}
+		} else {
+			log.fine("No matching rule found");
+			if (debug) {
+				throw new ServletException("No matching rule found for url " + path + "\n" + resolverConfig.toString());
+			} else {
+				try {
+					resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+				} catch (IOException e) {
+					throw new ServletException(e);
+				}
 			}
 		}
 	}

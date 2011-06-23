@@ -21,7 +21,7 @@ package ar.sgt.resolver.config;
 
 public interface RuleConstant {
 
-	public static final String NODE_DISPATCHER = "dispatcher";
+	public static final String NODE_DISPATCHER = "processor";
 	public static final String NODE_RULE = "rule";
 
 	public static final String ATT_CLASS = "class";

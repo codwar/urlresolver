@@ -19,6 +19,8 @@
  */
 package ar.sgt.resolver.listener;
 
+import java.util.logging.Logger;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -28,6 +30,8 @@ import javax.servlet.ServletContextListener;
  */
 public class ResolverListener implements ServletContextListener {
 
+	private static final Logger log = Logger.getLogger(ResolverListener.class.getName());
+	
 	private ContextLoader contextLoader = null;
 
 	/*
@@ -38,9 +42,9 @@ public class ResolverListener implements ServletContextListener {
 	 * .ServletContextEvent)
 	 */
 	public void contextInitialized(ServletContextEvent sce) {
+		log.fine("Initializing context");
 		this.contextLoader = createContextLoader();
 		this.contextLoader.initWebContext(sce.getServletContext());
-
 	}
 
 	/*
@@ -50,6 +54,7 @@ public class ResolverListener implements ServletContextListener {
 	 * ServletContextEvent)
 	 */
 	public void contextDestroyed(ServletContextEvent sce) {
+		log.fine("Context destroyed");
 		if (this.contextLoader != null) {
 			this.contextLoader.destroyWebContext(sce.getServletContext());
 		}
