@@ -25,15 +25,16 @@ Create the file WEB-INF/urlresolver.xml
       <processor class="ajava.class.TestProcessor1">
         <rule name="rule1" uri="^(?P(slug)[-\w]+)/detail/$"/>
       </processor>
-      <processor class="ajava.class.TestProcessor1">
+      <processor class="ajava.class.TestProcessor2">
         <rule uri="^detail/$"/>
       </processor>  
     </config>
 
-In this case `?P(slug)` will automatically parsed as a parameter.
+In this case `?P(slug)` will be handled as a parameter.
 
-Your TestProcessor must extend ar.sgt.resolver.processor.Processor
-ResolverContext contains the parameters maps (if apply), in the example `slug`
+Your `TestProcessor` must extend `ar.sgt.resolver.processor.Processor`
+
+`ResolverContext` contains the parameters maps (if any), in the example `slug`
 
 ### Servlet Parameters
 
