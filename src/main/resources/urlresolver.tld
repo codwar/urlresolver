@@ -13,7 +13,7 @@
 
     <tag>
         <name>url</name>
-        <tag-class>ar.sgt.resolver.tag.UrlTag</tagclass>
+        <tag-class>ar.sgt.resolver.tag.UrlTag</tag-class>
         <body-content>JSP</body-content>
         <description>URL Tag</description>
         <attribute>
@@ -26,7 +26,7 @@
     
     <tag>
         <name>param</name>
-        <tag-class>ar.sgt.resolver.tag.ParamTag</tagclass>
+        <tag-class>ar.sgt.resolver.tag.ParamTag</tag-class>
         <body-content>empty</body-content>
         <description>Param for URL Tag</description>
         <attribute>
