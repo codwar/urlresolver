@@ -15,23 +15,14 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with JIPDBS. If not, see <http://www.gnu.org/licenses/>.
+ *   along with UrlResolver. If not, see <http://www.gnu.org/licenses/>.
  */
 package ar.sgt.resolver.processor;
 
-import java.io.Serializable;
+import ar.sgt.resolver.exception.ProcessorException;
 
-/**
- * @author gabriel
- *
- */
-public abstract class Processor implements Serializable {
+public interface Processor {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4776195500451705047L;
-	
-	public abstract void doProcess(ResolverContext context);
+	void process(ProcessorContext processorContext, ResolverContext context) throws ProcessorException;
 	
 }

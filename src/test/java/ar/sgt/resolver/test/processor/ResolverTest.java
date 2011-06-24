@@ -15,7 +15,7 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with JIPDBS. If not, see <http://www.gnu.org/licenses/>.
+ *   along with UrlResolver. If not, see <http://www.gnu.org/licenses/>.
  */
 package ar.sgt.resolver.test.processor;
 
@@ -31,6 +31,7 @@ import org.xml.sax.SAXException;
 import ar.sgt.resolver.config.ConfigParser;
 import ar.sgt.resolver.config.ResolverConfig;
 import ar.sgt.resolver.config.Rule;
+import ar.sgt.resolver.processor.ForwardProcessor;
 
 public class ResolverTest extends TestCase {
 
@@ -62,6 +63,9 @@ public class ResolverTest extends TestCase {
 		assertEquals("TestProcessor1", rule3.getProcessor());
 		Rule rule4 = config.findByName("rule4");
 		assertNull(rule4);
+		Rule rule5 = config.findRule("detail/redirect/");
+		assertEquals(ForwardProcessor.class.getName(), rule5.getProcessor());
 	}
+	
 	
 }

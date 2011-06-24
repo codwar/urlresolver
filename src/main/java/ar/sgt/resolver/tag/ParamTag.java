@@ -1,5 +1,5 @@
 /**
- *   RuleConstant
+ *   ParamTag
  *   Copyright(c) 2011 Sergio Gabriel Teves
  * 
  *   This file is part of UrlResolver.
@@ -17,17 +17,42 @@
  *   You should have received a copy of the GNU General Public License
  *   along with UrlResolver. If not, see <http://www.gnu.org/licenses/>.
  */
-package ar.sgt.resolver.config;
+package ar.sgt.resolver.tag;
 
-public interface RuleConstant {
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
 
-	public static final String NODE_PROCESSOR = "processor";
-	public static final String NODE_FORWARDPROCESSOR = "forward-processor";
-	public static final String NODE_RULE = "rule";
+public class ParamTag extends TagSupport {
 
-	public static final String ATT_CLASS = "class";
-	public static final String ATT_PATTERN = "pattern";
-	public static final String ATT_NAME = "name";
-	public static final String ATT_REDIRECT = "redirect";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1429809830907275952L;
+
+	private String name;
+	private String value;
+	
+	private UrlTag parent;
+	
+	@Override
+	public int doStartTag() throws JspException {
+		this.parent = (UrlTag) getParent();
+		this.parent.addParam(this.name, this.value);
+		return SKIP_BODY;
+	}
+
+	@Override
+	public int doEndTag() throws JspException {
+		return EVAL_PAGE;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
 	
 }

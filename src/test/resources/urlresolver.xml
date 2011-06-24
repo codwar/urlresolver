@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../main/resources/urlresolver.xsd">
   <processor class="TestProcessor1">
-    <rule name="rule1" uri="^(?P(slug)[-\w]+)/detail/$"/>
+    <rule name="rule1" pattern="^(?P(slug)[-\w]+)/detail/$"/>
   </processor>
-  <processor class="TestProcessor2">
-    <rule uri="^detail/$"/>
-  </processor>  
+  <processor class="TestProcessor2" redirect="page1.jsp">
+    <rule pattern="^detail/$"/>
+  </processor>
+  <forward-processor redirect="page.jsp">
+  	<rule pattern="^detail/redirect/$"/>
+  </forward-processor>
 </config>

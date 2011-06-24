@@ -15,7 +15,7 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with JIPDBS. If not, see <http://www.gnu.org/licenses/>.
+ *   along with UrlResolver. If not, see <http://www.gnu.org/licenses/>.
  */
 package ar.sgt.resolver.listener;
 

@@ -15,7 +15,7 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with JIPDBS. If not, see <http://www.gnu.org/licenses/>.
+ *   along with UrlResolver. If not, see <http://www.gnu.org/licenses/>.
  */
 package ar.sgt.resolver.config;
 
@@ -28,9 +28,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import ar.sgt.resolver.processor.ForwardProcessor;
 
 /**
  * @author gabriel
@@ -54,30 +55,39 @@ public class ConfigParser {
 		Document doc = dBuilder.parse(file);
 		doc.getDocumentElement().normalize();
 
-		NodeList dispatcherList = doc.getElementsByTagName(RuleConstant.NODE_DISPATCHER);
+		NodeList processorList = doc.getElementsByTagName(RuleConstant.NODE_PROCESSOR);
 
-		for (int i = 0; i < dispatcherList.getLength(); i++) {
-			processDispatcher(dispatcherList.item(i));
+		for (int i = 0; i < processorList.getLength(); i++) {
+			Element node = (Element) processorList.item(i);
+			String controller = node.getAttribute(RuleConstant.ATT_CLASS);
+			processProcessorNode(controller, node);
 		}
 
+		NodeList forwardList = doc.getElementsByTagName(RuleConstant.NODE_FORWARDPROCESSOR);
+
+		for (int i = 0; i < forwardList.getLength(); i++) {
+			Element node = (Element) forwardList.item(i);
+			String controller = ForwardProcessor.class.getName();
+			processProcessorNode(controller, node);
+		}
+		
 		return this.config;
 	}
 
 	/**
 	 * @param item
 	 */
-	private void processDispatcher(Node node) {
+	private void processProcessorNode(String controller, Element node) {
 
-		Element dispatcher = (Element) node;
-		String controller = dispatcher.getAttribute(RuleConstant.ATT_CLASS);
-
-		NodeList rules = dispatcher.getElementsByTagName(RuleConstant.NODE_RULE);
+		NodeList rules = node.getElementsByTagName(RuleConstant.NODE_RULE);
 
 		for (int i = 0; i < rules.getLength(); i++) {
 			Element rule = (Element) rules.item(i);
-			this.config.addRule(controller, rule.getAttribute(RuleConstant.ATT_URI),
+			this.config.addRule(controller, rule.getAttribute(RuleConstant.ATT_PATTERN),
 											rule.hasAttribute(RuleConstant.ATT_NAME) ? rule
-											.getAttribute(RuleConstant.ATT_NAME) : null);
+											.getAttribute(RuleConstant.ATT_NAME) : null,
+											rule.hasAttribute(RuleConstant.ATT_REDIRECT) ? rule
+													.getAttribute(RuleConstant.ATT_REDIRECT) : null);
 		}
 
 	}

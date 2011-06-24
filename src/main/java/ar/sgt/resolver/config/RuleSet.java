@@ -15,7 +15,7 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with JIPDBS. If not, see <http://www.gnu.org/licenses/>.
+ *   along with UrlResolver. If not, see <http://www.gnu.org/licenses/>.
  */
 package ar.sgt.resolver.config;
 
@@ -34,9 +34,9 @@ public final class RuleSet {
 		this.rules = new HashMap<String, Rule>();
 	}
 
-	public void addRule(String processor, String path, String name) {
+	public void addRule(String processor, String path, String name, String forward) {
 		// if no name is set. use path as name
-		this.rules.put(name != null ? name : path, new Rule(processor, path));
+		this.rules.put(name != null ? name : path, new Rule(processor, path, forward));
 	}
 	
 	public Rule match(String path) {

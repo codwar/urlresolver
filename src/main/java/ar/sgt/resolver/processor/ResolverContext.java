@@ -15,13 +15,14 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with JIPDBS. If not, see <http://www.gnu.org/licenses/>.
+ *   along with UrlResolver. If not, see <http://www.gnu.org/licenses/>.
  */
 package ar.sgt.resolver.processor;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,15 +35,17 @@ import ar.sgt.resolver.listener.Context;
 public final class ResolverContext implements Context {
 	
 	private Map<String, String> parameters;
+	private ServletContext servletContext;
 	private HttpServletRequest req;
 	private HttpServletResponse resp;
 	private String method;
 
-	public ResolverContext(HttpServletRequest req, HttpServletResponse resp, String method) {
-		this(req, resp, new HashMap<String, String>(), method);
+	public ResolverContext(ServletContext servletContext, HttpServletRequest req, HttpServletResponse resp, String method) {
+		this(servletContext, req, resp, new HashMap<String, String>(), method);
 	}
 	
-	public ResolverContext(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params, String method) {
+	public ResolverContext(ServletContext servletContext, HttpServletRequest req, HttpServletResponse resp, Map<String, String> params, String method) {
+		this.servletContext = servletContext;
 		this.parameters = params;
 		this.req = req;
 		this.resp = resp;
@@ -67,6 +70,10 @@ public final class ResolverContext implements Context {
 	
 	public boolean isGet() {
 		return METHOD_GET.equals(this.method);
+	}
+
+	public ServletContext getServletContext() {
+		return servletContext;
 	}
 	
 }

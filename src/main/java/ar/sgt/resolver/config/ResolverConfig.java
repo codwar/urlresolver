@@ -15,7 +15,7 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with JIPDBS. If not, see <http://www.gnu.org/licenses/>.
+ *   along with UrlResolver. If not, see <http://www.gnu.org/licenses/>.
  */
 package ar.sgt.resolver.config;
 
@@ -27,8 +27,8 @@ public class ResolverConfig {
 		rules = new RuleSet();
 	}
 	
-	void addRule(String controller, String path, String type) {
-		this.rules.addRule(controller, path, type);
+	void addRule(String controller, String path, String name, String forward) {
+		this.rules.addRule(controller, path, name, forward);
 	}
 
 	public Rule findRule(String path) {

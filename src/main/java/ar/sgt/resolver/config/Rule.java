@@ -15,7 +15,7 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with JIPDBS. If not, see <http://www.gnu.org/licenses/>.
+ *   along with UrlResolver. If not, see <http://www.gnu.org/licenses/>.
  */
 package ar.sgt.resolver.config;
 
@@ -32,8 +32,9 @@ import com.google.code.regexp.NamedPattern;
 public final class Rule {
 
 	public String processor;
-	public String uri;
-
+	public String pattern;
+	public String redirect;
+	
 	private NamedMatcher matcher;
 	
 	/**
@@ -41,17 +42,18 @@ public final class Rule {
 	 * @param path
 	 * @param type
 	 */
-	public Rule(String processor, String uri) {
+	public Rule(String processor, String pattern, String redirect) {
 		this.processor = processor;
-		this.uri = uri;
+		this.pattern = pattern;
+		this.redirect = redirect;
 	}
 
-	public String getUri() {
-		return uri;
+	public String getPattern() {
+		return pattern;
 	}
 
-	public void setUri(String path) {
-		this.uri = path;
+	public void setPattern(String path) {
+		this.pattern = path;
 	}
 
 	public String getProcessor() {
@@ -63,7 +65,7 @@ public final class Rule {
 	}	
 
 	public boolean match(String path) {
-		NamedPattern p = NamedPattern.compile(this.uri);
+		NamedPattern p = NamedPattern.compile(this.pattern);
 		this.matcher = p.matcher(path);
 		return this.matcher.matches();
 	}
@@ -74,6 +76,14 @@ public final class Rule {
 		return this.matcher.namedGroups();
 	}
 	
+	public String getRedirect() {
+		return redirect;
+	}
+
+	public void setRedirect(String redirect) {
+		this.redirect = redirect;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -81,10 +91,10 @@ public final class Rule {
 	public String toString() {
 		StringBuilder builder = new StringBuilder("<rule>\n");
 		builder.append("<processor>").append(this.processor).append("</processor>\n");
-		builder.append("<uri>").append(this.uri).append("</uri>\n");
+		builder.append("<pattern>").append(this.pattern).append("</pattern>\n");
+		if (this.redirect != null) builder.append("<redirect>").append(this.redirect).append("</redirect>\n");
 		builder.append("</rule>\n");
 		return builder.toString();
-	}
-
+	}	
 	
 }

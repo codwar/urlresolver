@@ -1,5 +1,5 @@
 /**
- *   RuleConstant
+ *   ProcessorException
  *   Copyright(c) 2011 Sergio Gabriel Teves
  * 
  *   This file is part of UrlResolver.
@@ -17,17 +17,25 @@
  *   You should have received a copy of the GNU General Public License
  *   along with UrlResolver. If not, see <http://www.gnu.org/licenses/>.
  */
-package ar.sgt.resolver.config;
+package ar.sgt.resolver.exception;
 
-public interface RuleConstant {
+public class ProcessorException extends ResolverException {
 
-	public static final String NODE_PROCESSOR = "processor";
-	public static final String NODE_FORWARDPROCESSOR = "forward-processor";
-	public static final String NODE_RULE = "rule";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4971131837004333603L;
 
-	public static final String ATT_CLASS = "class";
-	public static final String ATT_PATTERN = "pattern";
-	public static final String ATT_NAME = "name";
-	public static final String ATT_REDIRECT = "redirect";
+	public ProcessorException() {
+		super();
+	}
+	
+	public ProcessorException(String m) {
+		super(m);
+	}
+	
+	public ProcessorException(Throwable t) {
+		super(t);
+	}
 	
 }

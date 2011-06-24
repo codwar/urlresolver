@@ -15,7 +15,7 @@
  *   GNU General Public License for more details.
  *
  *   You should have received a copy of the GNU General Public License
- *   along with JIPDBS. If not, see <http://www.gnu.org/licenses/>.
+ *   along with UrlResolver. If not, see <http://www.gnu.org/licenses/>.
  */
 package ar.sgt.resolver.servlet;
 
@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import ar.sgt.resolver.config.ResolverConfig;
 import ar.sgt.resolver.config.Rule;
 import ar.sgt.resolver.listener.ContextLoader;
-import ar.sgt.resolver.processor.Processor;
+import ar.sgt.resolver.processor.ResponseProcessor;
 import ar.sgt.resolver.processor.ResolverContext;
 
 /**
@@ -76,8 +76,8 @@ public class ResolverServlet extends HttpServlet {
 		Rule rule = resolverConfig.findRule(path);
 		if (rule != null) {
 			log.fine("Found rule: " + rule.getProcessor());
-			ResolverContext context = new ResolverContext(req, resp, rule.parseParams(), method);
-			Processor processor;
+			ResolverContext context = new ResolverContext(getServletContext(), req, resp, rule.parseParams(), method);
+			ResponseProcessor processor;
 			try {
 				processor = loadClass(rule.getProcessor());
 				processor.doProcess(context);
@@ -109,9 +109,9 @@ public class ResolverServlet extends HttpServlet {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	private Processor loadClass(String clasz) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	private ResponseProcessor loadClass(String clasz) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		Class impl = Class.forName(clasz);
-		return (Processor) impl.newInstance();
+		return (ResponseProcessor) impl.newInstance();
 	}
 	
 }
