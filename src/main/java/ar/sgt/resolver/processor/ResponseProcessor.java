@@ -19,7 +19,6 @@
  */
 package ar.sgt.resolver.processor;
 
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import ar.sgt.resolver.exception.ProcessorException;
@@ -43,8 +42,8 @@ public abstract class ResponseProcessor implements Processor {
 		if (redirect != null) {
 			try {
 				log.fine("Fordward to " + redirect);
-				context.getResponse().sendRedirect(redirect);
-			} catch (IOException e) {
+				context.getServletContext().getRequestDispatcher(redirect).forward(context.getRequest(), context.getResponse());
+			} catch (Exception e) {
 				log.severe(e.getMessage());
 				throw new ProcessorException(e);
 			}

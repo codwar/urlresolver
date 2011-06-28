@@ -34,9 +34,9 @@ public final class RuleSet {
 		this.rules = new HashMap<String, Rule>();
 	}
 
-	public void addRule(String processor, String path, String name, String forward) {
+	public void addRule(String processor, String path, String name, String redirect) {
 		// if no name is set. use path as name
-		this.rules.put(name != null ? name : path, new Rule(processor, path, forward));
+		this.rules.put(name != null ? name : path, new Rule(processor, path, redirect));
 	}
 	
 	public Rule match(String path) {

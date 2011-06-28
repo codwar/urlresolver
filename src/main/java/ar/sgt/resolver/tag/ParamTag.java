@@ -38,7 +38,7 @@ public class ParamTag extends TagSupport {
 	public int doStartTag() throws JspException {
 		this.parent = (UrlTag) getParent();
 		this.parent.addParam(this.name, this.value);
-		return SKIP_BODY;
+		return EVAL_BODY_INCLUDE;
 	}
 
 	@Override

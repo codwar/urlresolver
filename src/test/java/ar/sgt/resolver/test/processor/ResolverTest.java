@@ -52,13 +52,14 @@ public class ResolverTest extends TestCase {
 		}
 	}
 
-	public void testResolver() {
+	public void testConfigLoader() {
 		Rule rule1 = config.findRule("aslugcode/detail/");
 		assertEquals("TestProcessor1", rule1.getProcessor());
 		assertEquals("aslugcode", rule1.parseParams().get("slug"));
 		Rule rule2 = config.findRule("detail/");
 		assertNull(rule2.parseParams().get("slug"));
 		assertEquals("TestProcessor2", rule2.getProcessor());
+		assertEquals("page1.jsp", rule2.getRedirect());
 		Rule rule3 = config.findByName("rule1");
 		assertEquals("TestProcessor1", rule3.getProcessor());
 		Rule rule4 = config.findByName("rule4");

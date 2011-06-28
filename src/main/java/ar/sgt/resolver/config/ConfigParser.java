@@ -86,7 +86,7 @@ public class ConfigParser {
 			this.config.addRule(controller, rule.getAttribute(RuleConstant.ATT_PATTERN),
 											rule.hasAttribute(RuleConstant.ATT_NAME) ? rule
 											.getAttribute(RuleConstant.ATT_NAME) : null,
-											rule.hasAttribute(RuleConstant.ATT_REDIRECT) ? rule
+											node.hasAttribute(RuleConstant.ATT_REDIRECT) ? node
 													.getAttribute(RuleConstant.ATT_REDIRECT) : null);
 		}
 
