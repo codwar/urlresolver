@@ -53,15 +53,26 @@ public class UrlTag extends BodyTagSupport {
 		ResolverConfig config = (ResolverConfig) pageContext.getServletContext().getAttribute(ContextLoader.RESOLVER_CONFIG);
 		Rule rule = config.findByName(this.name);
 		if (rule == null) throw new JspException("Unable to find a rule for name: " + this.name);
-		String html = RegexpHelper.normalize(rule.getPattern(), this.params);
+		String url = RegexpHelper.normalize(rule.getPattern());
 		try {
-			pageContext.getOut().write(html);
+			pageContext.getOut().write(processParams(url));
 		} catch (IOException e) {
 			throw new JspException(e);
 		}
 		return EVAL_PAGE;
 	}
 	
+	private String processParams(String url) {
+		if (params.size() > 0) {
+			String finalUrl = url;
+			for (Map.Entry<String, String> entry : params.entrySet()) {
+				finalUrl = finalUrl.replace("$" + entry.getKey(), entry.getValue());
+			}
+			return finalUrl;
+		} else return url;
+		
+	}
+
 	protected void addParam(String name, String value) {
 		this.params.put(name, value);
 	}

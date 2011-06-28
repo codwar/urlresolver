@@ -19,12 +19,12 @@
  */
 package ar.sgt.resolver.utils;
 
-import java.util.HashMap;
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
-import com.google.code.regexp.NamedMatcher;
 import com.google.code.regexp.NamedPattern;
 
 /**
@@ -36,53 +36,94 @@ import com.google.code.regexp.NamedPattern;
 public final class RegexpHelper {
 
 	/*
-	 * Mapping of an escape character to a representative of that class. So,
-	 * e.g., "\w" is replaced by "x" in a reverse URL. A value of None means to
-	 * ignore this sequence. Any missing key is mapped to itself.
+	 * If the char is in this list, it should be ignored (used for regexp
+	 * patterns, ie: \w )
 	 */
-	private static Map<String, String> ESCAPE_MAPPINGS;
+	private static List<String> ESCAPE_MAPPINGS = new LinkedList<String>();
+	/* this chars are ignored */
+	private static List<String> SKIP_MAPPINGS = new LinkedList<String>();
+
+	private static Pattern STRING_RE = Pattern.compile("\\w");
 
 	static {
-		ESCAPE_MAPPINGS = new HashMap<String, String>();
-		ESCAPE_MAPPINGS.put("A", null);
-		ESCAPE_MAPPINGS.put("b", null);
-		ESCAPE_MAPPINGS.put("B", null);
-		ESCAPE_MAPPINGS.put("d", "0");
-		ESCAPE_MAPPINGS.put("D", "x");
-		ESCAPE_MAPPINGS.put("s", " ");
-		ESCAPE_MAPPINGS.put("S", "x");
-		ESCAPE_MAPPINGS.put("w", "x");
-		ESCAPE_MAPPINGS.put("W", "!");
-		ESCAPE_MAPPINGS.put("Z", null);
+		ESCAPE_MAPPINGS.add("t");
+		ESCAPE_MAPPINGS.add("n");
+		ESCAPE_MAPPINGS.add("r");
+		ESCAPE_MAPPINGS.add("f");
+		ESCAPE_MAPPINGS.add("a");
+		ESCAPE_MAPPINGS.add(".");
+		ESCAPE_MAPPINGS.add("d");
+		ESCAPE_MAPPINGS.add("D");
+		ESCAPE_MAPPINGS.add("s");
+		ESCAPE_MAPPINGS.add("S");
+		ESCAPE_MAPPINGS.add("W");
+		ESCAPE_MAPPINGS.add("w");
+		ESCAPE_MAPPINGS.add("b");
+		ESCAPE_MAPPINGS.add("B");
+		ESCAPE_MAPPINGS.add("A");
+		ESCAPE_MAPPINGS.add("G");
+		ESCAPE_MAPPINGS.add("Z");
+		ESCAPE_MAPPINGS.add("Q");
+		ESCAPE_MAPPINGS.add("E");
+
+		SKIP_MAPPINGS.add("^");
+		SKIP_MAPPINGS.add("|");
+		SKIP_MAPPINGS.add("$");
+		SKIP_MAPPINGS.add("+");
+		SKIP_MAPPINGS.add("*");
 	}
 
 	/**
 	 * Given a reg-exp pattern, normalizes it to a list of forms that suffice
-	 * for reverse matching. This does the following:
+	 * for reverse matching.
 	 * 
-	 * (1) For any repeating sections, keeps the minimum number of occurrences
-	 * permitted (this means zero for optional groups).
-	 * (2) If an optional group includes parameters, include one occurrence of 
-	 * that group (along with the zero occurrence case from step (1)).
-	 * (3) Select the first (essentially an arbitrary) element from any character
-	 * class. Select an arbitrary character for any unordered class (e.g. '.' or '\w') in the pattern.
-	 * (4) Ignore comments and any of the reg-exp flags that won't change what we 
-	 * construct ("iLmsu"). "(?x)" is an error, however.
-	 * (6) Raise an error on all other non-capturing (?...) forms (e.g. look-ahead and look-behind
-	 * matches) and any disjunctive ('|') constructs.
 	 */
-	public static String normalize(String pattern, Map<String, String> data) {
-		NamedPattern p = NamedPattern.compile(pattern);
-		List<String> groups = p.groupNames();
-		for (String name : groups) {
-			String groupMatch = "\\?P\\(" + name + "\\)";
-			pattern = pattern.replaceFirst(groupMatch, data.get(name));
+	public static String normalize(String pattern) {
+		NamedPattern np = NamedPattern.compile(pattern);
+		for (String g : np.groupNames()) {
+			pattern = pattern.replaceAll("\\?P\\(" + g + "\\)", "\\$" + g);
 		}
-		
-		if (pattern.startsWith("^")) {
-			pattern = pattern.substring(1);
+		StringBuilder cleanPattern = new StringBuilder();
+		CharacterIterator it = new StringCharacterIterator(pattern);
+		for (char ch = it.first(); ch != CharacterIterator.DONE; ch = it.next()) {
+			if (ch == '\\') {
+				ch = it.next();
+				if (!ESCAPE_MAPPINGS.contains(String.valueOf(ch)))
+					cleanPattern.append(ch);
+			} else if (SKIP_MAPPINGS.contains(String.valueOf(ch)))
+				continue;
+			else if (ch == '[') { // start group
+				int nest = 1;
+				while (nest > 0) {
+					ch = it.next();
+					if (ch == '[')
+						nest += 1;
+					else if (ch == ']')
+						nest -= 1;
+				}
+			} else if (ch == '(') { // start group
+				int nest = 1;
+				ch = it.next();
+				if (ch == '$') { // we found a named group
+					cleanPattern.append("$");
+					ch = it.next();
+					while (STRING_RE.matcher(String.valueOf(ch)).matches()) {
+						cleanPattern.append(ch);
+						ch = it.next();
+					}
+				}
+				do {
+					if (ch == '(')
+						nest += 1;
+					else if (ch == ')')
+						nest -= 1;
+					ch = it.next();
+				} while (nest > 0);
+				ch = it.previous(); // go back one char
+			} else
+				cleanPattern.append(ch);
 		}
-		
-		return pattern;
+		return cleanPattern.toString();
 	}
+
 }
