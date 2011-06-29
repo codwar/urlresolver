@@ -74,14 +74,22 @@ public final class RegexpHelper {
 	}
 
 	/**
-	 * Given a reg-exp pattern, normalizes it to a list of forms that suffice
-	 * for reverse matching.
+	 * If withGroups = false it will no process patterns that doesn't have named
+	 * groups
 	 * 
 	 */
-	public static String normalize(String pattern) {
-		NamedPattern np = NamedPattern.compile(pattern);
-		for (String g : np.groupNames()) {
-			pattern = pattern.replaceAll("\\?P\\(" + g + "\\)", "\\$" + g);
+	public static String normalize(String pattern, boolean withGroups) {
+		if (!withGroups) {
+			NamedPattern np = NamedPattern.compile(pattern);
+			if (np.groupNames().size() == 0) {
+				// simply clean the pattern and return unprocessed
+				if (pattern.startsWith("^")) pattern = pattern.substring(1);
+				if (pattern.endsWith("$")) pattern = pattern.substring(0, pattern.length() - 1);
+				return pattern;
+			}
+			// for (String g : np.groupNames()) {
+			// pattern = pattern.replaceAll("\\?P\\(" + g + "\\)", "\\$" + g);
+			// }
 		}
 		StringBuilder cleanPattern = new StringBuilder();
 		CharacterIterator it = new StringCharacterIterator(pattern);
@@ -124,6 +132,15 @@ public final class RegexpHelper {
 				cleanPattern.append(ch);
 		}
 		return cleanPattern.toString();
+	}
+
+	/**
+	 * Given a reg-exp pattern, normalizes it to a list of forms that suffice
+	 * for reverse matching.
+	 * 
+	 */
+	public static String normalize(String pattern) {
+		return normalize(pattern, true);
 	}
 
 }

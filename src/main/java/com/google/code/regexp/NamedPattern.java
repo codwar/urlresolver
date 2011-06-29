@@ -7,7 +7,8 @@ import java.util.regex.Pattern;
 
 public class NamedPattern {
 
-	private static final Pattern NAMED_GROUP_PATTERN = Pattern.compile("\\(\\?P\\((\\w+)\\)");
+	//private static final Pattern NAMED_GROUP_PATTERN = Pattern.compile("\\(\\?P\\((\\w+)\\)");
+	private static final Pattern NAMED_GROUP_PATTERN = Pattern.compile("\\$(\\w+)");
 
 	private Pattern pattern;
 	private String namedPattern;
@@ -73,7 +74,8 @@ public class NamedPattern {
 	}
 
 	static Pattern buildStandardPattern(String namedPattern) {
-		return Pattern.compile(NAMED_GROUP_PATTERN.matcher(namedPattern).replaceAll("("));
+		//return Pattern.compile(NAMED_GROUP_PATTERN.matcher(namedPattern).replaceAll("("));
+		return Pattern.compile(NAMED_GROUP_PATTERN.matcher(namedPattern).replaceAll(""));
 	}
 
 }

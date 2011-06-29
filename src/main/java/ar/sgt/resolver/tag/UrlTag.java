@@ -27,9 +27,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import ar.sgt.resolver.config.ResolverConfig;
-import ar.sgt.resolver.config.Rule;
+import ar.sgt.resolver.exception.RuleNotFoundException;
 import ar.sgt.resolver.listener.ContextLoader;
-import ar.sgt.resolver.utils.RegexpHelper;
+import ar.sgt.resolver.utils.UrlReverse;
 
 public class UrlTag extends BodyTagSupport {
 
@@ -51,26 +51,15 @@ public class UrlTag extends BodyTagSupport {
 	@Override
 	public int doEndTag() throws JspException {
 		ResolverConfig config = (ResolverConfig) pageContext.getServletContext().getAttribute(ContextLoader.RESOLVER_CONFIG);
-		Rule rule = config.findByName(this.name);
-		if (rule == null) throw new JspException("Unable to find a rule for name: " + this.name);
-		String url = RegexpHelper.normalize(rule.getPattern());
+		UrlReverse reverse = new UrlReverse(config);
 		try {
-			pageContext.getOut().write(processParams(url));
+			pageContext.getOut().write(reverse.resolve(this.name));
 		} catch (IOException e) {
+			throw new JspException(e);
+		} catch (RuleNotFoundException e) {
 			throw new JspException(e);
 		}
 		return EVAL_PAGE;
-	}
-	
-	private String processParams(String url) {
-		if (params.size() > 0) {
-			String finalUrl = url;
-			for (Map.Entry<String, String> entry : params.entrySet()) {
-				finalUrl = finalUrl.replace("$" + entry.getKey(), entry.getValue());
-			}
-			return finalUrl;
-		} else return url;
-		
 	}
 
 	protected void addParam(String name, String value) {
