@@ -53,7 +53,7 @@ public class UrlTag extends BodyTagSupport {
 		ResolverConfig config = (ResolverConfig) pageContext.getServletContext().getAttribute(ContextLoader.RESOLVER_CONFIG);
 		UrlReverse reverse = new UrlReverse(config);
 		try {
-			pageContext.getOut().write(reverse.resolve(this.name));
+			pageContext.getOut().write(reverse.resolve(this.name, this.params));
 		} catch (IOException e) {
 			throw new JspException(e);
 		} catch (RuleNotFoundException e) {
