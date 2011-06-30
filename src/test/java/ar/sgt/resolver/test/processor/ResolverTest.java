@@ -30,8 +30,8 @@ import org.xml.sax.SAXException;
 
 import ar.sgt.resolver.config.ConfigParser;
 import ar.sgt.resolver.config.ResolverConfig;
-import ar.sgt.resolver.config.Rule;
 import ar.sgt.resolver.processor.ForwardProcessor;
+import ar.sgt.resolver.rule.Rule;
 
 public class ResolverTest extends TestCase {
 
@@ -66,6 +66,7 @@ public class ResolverTest extends TestCase {
 		assertNull(rule4);
 		Rule rule5 = config.findRule("detail/redirect/");
 		assertEquals(ForwardProcessor.class.getName(), rule5.getProcessor());
+		assertEquals(2, rule5.getArguments().size());
 	}
 	
 	

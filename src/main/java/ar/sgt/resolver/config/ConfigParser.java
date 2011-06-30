@@ -32,6 +32,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import ar.sgt.resolver.processor.ForwardProcessor;
+import ar.sgt.resolver.rule.Rule;
 
 /**
  * @author gabriel
@@ -82,14 +83,25 @@ public class ConfigParser {
 		NodeList rules = node.getElementsByTagName(RuleConstant.NODE_RULE);
 
 		for (int i = 0; i < rules.getLength(); i++) {
-			Element rule = (Element) rules.item(i);
-			this.config.addRule(controller, rule.getAttribute(RuleConstant.ATT_PATTERN),
-											rule.hasAttribute(RuleConstant.ATT_NAME) ? rule
+			Element ruleNode = (Element) rules.item(i);
+			Rule rule = this.config.addRule(controller, ruleNode.getAttribute(RuleConstant.ATT_PATTERN),
+											ruleNode.hasAttribute(RuleConstant.ATT_NAME) ? ruleNode
 											.getAttribute(RuleConstant.ATT_NAME) : null,
 											node.hasAttribute(RuleConstant.ATT_REDIRECT) ? node
 													.getAttribute(RuleConstant.ATT_REDIRECT) : null);
+			processRuleArguments(rule, ruleNode);
 		}
 
+	}
+
+	private void processRuleArguments(Rule rule, Element node) {
+		
+		NodeList args = node.getElementsByTagName(RuleConstant.NODE_ARG);
+		
+		for (int i = 0; i < args.getLength(); i++) {
+			Element argNode = (Element) args.item(i);
+			rule.addArgument(argNode.getAttribute(RuleConstant.ATT_NAME), argNode.getAttribute(RuleConstant.ATT_VALUE));
+		}
 	}
 
 }

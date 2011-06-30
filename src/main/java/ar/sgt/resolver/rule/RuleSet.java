@@ -17,7 +17,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with UrlResolver. If not, see <http://www.gnu.org/licenses/>.
  */
-package ar.sgt.resolver.config;
+package ar.sgt.resolver.rule;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,9 +34,11 @@ public final class RuleSet {
 		this.rules = new HashMap<String, Rule>();
 	}
 
-	public void addRule(String processor, String path, String name, String redirect) {
+	public Rule addRule(String processor, String path, String name, String redirect) {
 		// if no name is set. use path as name
-		this.rules.put(name != null ? name : path, new Rule(processor, path, redirect));
+		Rule rule = new Rule(name, processor, path, redirect);
+		this.rules.put(name != null ? name : path, rule);
+		return rule;
 	}
 	
 	public Rule match(String path) {

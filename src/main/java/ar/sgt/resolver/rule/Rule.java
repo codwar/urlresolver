@@ -17,7 +17,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with UrlResolver. If not, see <http://www.gnu.org/licenses/>.
  */
-package ar.sgt.resolver.config;
+package ar.sgt.resolver.rule;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +31,12 @@ import com.google.code.regexp.NamedPattern;
  */
 public final class Rule {
 
-	public String processor;
-	public String pattern;
-	public String redirect;
+	private String processor;
+	private String pattern;
+	private String redirect;
+	private String name;
+	
+	private Map<String, String> args;
 	
 	private NamedMatcher matcher;
 	
@@ -42,46 +45,28 @@ public final class Rule {
 	 * @param path
 	 * @param type
 	 */
-	public Rule(String processor, String pattern, String redirect) {
+	public Rule(String name, String processor, String pattern, String redirect) {
+		this.name = name;
 		this.processor = processor;
 		this.pattern = pattern;
 		this.redirect = redirect;
+		this.args = new HashMap<String, String>();
 	}
 
-	public String getPattern() {
-		return pattern;
+	public void addArgument(String name, String value) {
+		args.put(name, value);
 	}
-
-	public void setPattern(String path) {
-		this.pattern = path;
-	}
-
-	public String getProcessor() {
-		return processor;
-	}
-
-	public void setProcessor(String processor) {
-		this.processor = processor;
-	}	
 
 	public boolean match(String path) {
 		NamedPattern p = NamedPattern.compile(this.pattern);
 		this.matcher = p.matcher(path);
 		return this.matcher.matches();
 	}
-	
+
 	public Map<String, String> parseParams() {
 		Map<String, String> map = new HashMap<String, String>();
 		if (this.matcher == null) return map;
 		return this.matcher.namedGroups();
-	}
-	
-	public String getRedirect() {
-		return redirect;
-	}
-
-	public void setRedirect(String redirect) {
-		this.redirect = redirect;
 	}
 
 	/* (non-Javadoc)
@@ -95,6 +80,25 @@ public final class Rule {
 		if (this.redirect != null) builder.append("<redirect>").append(this.redirect).append("</redirect>\n");
 		builder.append("</rule>\n");
 		return builder.toString();
+	}
+
+	public String getProcessor() {
+		return processor;
+	}
+
+	public String getPattern() {
+		return pattern;
+	}
+
+	public String getRedirect() {
+		return redirect;
+	}
+
+	public String getName() {
+		return name;
 	}	
 	
+	public Map<String, String> getArguments() {
+		return this.args;
+	}
 }

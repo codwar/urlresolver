@@ -64,6 +64,10 @@ public final class ResolverContext implements Context {
 		return this.parameters.get(name);
 	}
 
+	public boolean hasParameter(String name) {
+		return this.parameters.containsKey(name);
+	}
+	
 	public boolean isPost() {
 		return METHOD_POST.equals(this.method);
 	}

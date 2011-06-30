@@ -32,12 +32,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ar.sgt.resolver.config.ResolverConfig;
-import ar.sgt.resolver.config.Rule;
+import ar.sgt.resolver.config.RuleConstant;
 import ar.sgt.resolver.exception.HttpError;
 import ar.sgt.resolver.listener.ContextLoader;
 import ar.sgt.resolver.processor.Processor;
 import ar.sgt.resolver.processor.ProcessorContext;
 import ar.sgt.resolver.processor.ResolverContext;
+import ar.sgt.resolver.rule.Rule;
 
 public class ResolverFilter implements Filter {
 
@@ -67,6 +68,10 @@ public class ResolverFilter implements Filter {
 		Rule rule = resolverConfig.findRule(path);
 		if (rule != null) {
 			log.fine("Found rule: " + rule.getProcessor());
+			// put the current rule name in context to use it in url resolve
+			if (rule.getName() != null) {
+				req.setAttribute(RuleConstant.CURRENT_RULE, rule.getName());	
+			}
 			ResolverContext context = new ResolverContext(filterConfig.getServletContext(), req, resp, rule.parseParams(), req.getMethod());
 			ProcessorContext processorContext = new ProcessorContext(rule.getRedirect());
 			Processor processor;

@@ -1,5 +1,5 @@
 /**
- *   ResolverConfig
+ *   ReverseException
  *   Copyright(c) 2011 Sergio Gabriel Teves
  * 
  *   This file is part of UrlResolver.
@@ -17,36 +17,25 @@
  *   You should have received a copy of the GNU General Public License
  *   along with UrlResolver. If not, see <http://www.gnu.org/licenses/>.
  */
-package ar.sgt.resolver.config;
+package ar.sgt.resolver.exception;
 
-import ar.sgt.resolver.rule.Rule;
-import ar.sgt.resolver.rule.RuleSet;
+public class ReverseException extends Exception {
 
-public class ResolverConfig {
-
-	public RuleSet rules;
-	
-	ResolverConfig() {
-		rules = new RuleSet();
-	}
-	
-	protected Rule addRule(String controller, String path, String name, String forward) {
-		return this.rules.addRule(controller, path, name, forward);
-	}
-
-	public Rule findRule(String path) {
-		return rules.match(path);
-	}
-	
-	public Rule findByName(String name) {
-		return this.rules.findByName(name);
-	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	/**
+	 * 
 	 */
-	@Override
-	public String toString() {
-		return this.rules.toString();
+	private static final long serialVersionUID = 4971131837004333603L;
+
+	public ReverseException() {
+		super();
 	}
+	
+	public ReverseException(String m) {
+		super(m);
+	}
+	
+	public ReverseException(Throwable t) {
+		super(t);
+	}
+	
 }

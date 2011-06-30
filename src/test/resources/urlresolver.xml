@@ -7,6 +7,9 @@
     <rule pattern="^detail/$"/>
   </processor>
   <forward-processor redirect="page.jsp">
-  	<rule pattern="^detail/redirect/$"/>
+  	<rule pattern="^detail/redirect/$">
+        <arg name="arg1" value="value1"/>
+        <arg name="arg2" value="value2"/>
+  	</rule>
   </forward-processor>
 </config>

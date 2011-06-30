@@ -1,5 +1,5 @@
 /**
- *   UrlTag
+ *   UrlCleanTag
  *   Copyright(c) 2011 Sergio Gabriel Teves
  * 
  *   This file is part of UrlResolver.
@@ -20,59 +20,52 @@
 package ar.sgt.resolver.tag;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import ar.sgt.resolver.config.ResolverConfig;
-import ar.sgt.resolver.exception.ReverseException;
 import ar.sgt.resolver.exception.RuleNotFoundException;
 import ar.sgt.resolver.listener.ContextLoader;
-import ar.sgt.resolver.utils.UrlReverse;
+import ar.sgt.resolver.rule.Rule;
+import ar.sgt.resolver.utils.RegexpHelper;
 
-public class UrlTag extends BodyTagSupport {
+public class UrlCleanTag extends BodyTagSupport {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3538312691752045758L;
 	
-	private Map<String, String> params;
-	
 	private String name;
 	private String var;
 	
 	@Override
 	public int doStartTag() throws JspException {
-		this.params = new HashMap<String, String>();
 		return EVAL_BODY_INCLUDE;
 	}
 
 	@Override
 	public int doEndTag() throws JspException {
 		ResolverConfig config = (ResolverConfig) pageContext.getServletContext().getAttribute(ContextLoader.RESOLVER_CONFIG);
-		UrlReverse reverse = new UrlReverse(config);
 		try {
-			String html = reverse.resolve(this.name, this.params);
-			if (this.var != null) {
-				pageContext.setAttribute(this.var, html);
+			Rule rule = config.findByName(this.name);
+			if (rule != null) {
+				String html = RegexpHelper.normalize(rule.getPattern());
+				if (this.var != null) {
+					pageContext.setAttribute(this.var, html);
+				} else {
+					pageContext.getOut().write(html);	
+				}
 			} else {
-				pageContext.getOut().write(html);	
+				throw new RuleNotFoundException("Unable to find a rule for name: " + this.name);
 			}
 		} catch (IOException e) {
 			throw new JspException(e);
 		} catch (RuleNotFoundException e) {
 			throw new JspException(e);
-		} catch (ReverseException e) {
-			throw new JspException(e);
 		}
 		return EVAL_PAGE;
-	}
-
-	protected void addParam(String name, String value) {
-		this.params.put(name, value);
 	}
 
 	public void setName(String name) {

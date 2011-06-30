@@ -19,15 +19,24 @@
  */
 package ar.sgt.resolver.utils;
 
+import hurl.build.QueryBuilder;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletContext;
 
 import ar.sgt.resolver.config.ResolverConfig;
-import ar.sgt.resolver.config.Rule;
+import ar.sgt.resolver.exception.ReverseException;
 import ar.sgt.resolver.exception.RuleNotFoundException;
 import ar.sgt.resolver.listener.ContextLoader;
+import ar.sgt.resolver.rule.Rule;
+
+import com.google.code.regexp.NamedPattern;
 
 public final class UrlReverse {
 
@@ -41,22 +50,40 @@ public final class UrlReverse {
 		this.config = (ResolverConfig) context.getAttribute(ContextLoader.RESOLVER_CONFIG);	
 	}
 	
-	public String resolve(String name) throws RuleNotFoundException {
+	public String resolve(String name) throws RuleNotFoundException, ReverseException {
 		return resolve(name, Collections.<String,String>emptyMap());
 	}
 
-	public String resolve(String name, Map<String, String> params) throws RuleNotFoundException {
+	public String resolve(String name, Map<String, String> params) throws RuleNotFoundException, ReverseException {
 		Rule rule = this.config.findByName(name);
 		if (rule == null) throw new RuleNotFoundException("Unable to find a rule for name: " + name);
 		return reverse(rule.getPattern(), params);
 	}
 	
-	private String reverse(String url, Map<String, String> params) {
+	private String reverse(String url, Map<String, String> params) throws ReverseException {
 		if (params.size() > 0) {
+			NamedPattern pt = NamedPattern.compile(url);
 			String finalUrl = RegexpHelper.normalize(url);
-			for (Map.Entry<String, String> entry : params.entrySet()) {
-				finalUrl = finalUrl.replace("$" + entry.getKey(),
-						entry.getValue());
+			// clone the params map, we don't want to modify the original map
+			Map<String, String> tempParams = new HashMap<String, String>(params);
+			if (pt.groupNames().size() > 0) {
+				for (String key : pt.groupNames()) {
+					String value = tempParams.remove(key);
+					if (value == null) throw new ReverseException("Missing param " + key);
+					try {
+						finalUrl = finalUrl.replace("$" + key, URLEncoder.encode(value, "UTF-8"));
+					} catch (UnsupportedEncodingException e) {
+						throw new ReverseException(e);
+					}
+				}
+			}
+			if (tempParams.size() > 0) {
+				// we still have unmatched params. add it as query
+				QueryBuilder queryBuilder = QueryBuilder.create();
+				for (Entry<String, String> entry : tempParams.entrySet()) {
+					queryBuilder.addParam(entry.getKey(), entry.getValue());	
+				}
+				finalUrl = finalUrl + "?" + queryBuilder.toString();
 			}
 			return finalUrl;
 		} else {

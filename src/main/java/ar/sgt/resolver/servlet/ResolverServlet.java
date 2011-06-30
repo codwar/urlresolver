@@ -28,10 +28,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ar.sgt.resolver.config.ResolverConfig;
-import ar.sgt.resolver.config.Rule;
 import ar.sgt.resolver.listener.ContextLoader;
 import ar.sgt.resolver.processor.ResponseProcessor;
 import ar.sgt.resolver.processor.ResolverContext;
+import ar.sgt.resolver.rule.Rule;
 
 /**
  * @author gabriel

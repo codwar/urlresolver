@@ -11,23 +11,31 @@
 	</xs:element>
 
 	<xs:complexType name="fordwardProcessorType">
-		<xs:sequence>
-			<xs:element name="rule" type="ruleType" maxOccurs="unbounded" />
+		<xs:sequence maxOccurs="unbounded" minOccurs="1">
+			<xs:element name="rule" type="ruleType"/>
 		</xs:sequence>
 		<xs:attribute name="redirect" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="processorType">
-		<xs:sequence>
-			<xs:element name="rule" type="ruleType" maxOccurs="unbounded" />
+		<xs:sequence maxOccurs="unbounded" minOccurs="1">
+			<xs:element name="rule" type="ruleType"/>
 		</xs:sequence>
 		<xs:attribute name="class" type="xs:string" use="required" />
 		<xs:attribute name="redirect" type="xs:string" use="optional" />
 	</xs:complexType>
 
 	<xs:complexType name="ruleType">
+        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+            <xs:element name="arg" type="argType"/>
+        </xs:sequence>	
 		<xs:attribute name="pattern" type="xs:string" use="required" />
 		<xs:attribute name="name" type="xs:string" use="optional" />
 	</xs:complexType>
 
+    <xs:complexType name="argType">
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="value" type="xs:string" use="required" />
+    </xs:complexType>
+    
 </xs:schema>
