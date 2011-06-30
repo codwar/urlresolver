@@ -65,8 +65,10 @@ public final class Rule {
 
 	public Map<String, String> parseParams() {
 		Map<String, String> map = new HashMap<String, String>();
+		map.putAll(this.args);
 		if (this.matcher == null) return map;
-		return this.matcher.namedGroups();
+		map.putAll(this.matcher.namedGroups());
+		return map;
 	}
 
 	/* (non-Javadoc)
