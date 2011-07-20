@@ -67,6 +67,7 @@ public class ResolverTest extends TestCase {
 		Rule rule5 = config.findRule("detail/redirect/");
 		assertEquals(ForwardProcessor.class.getName(), rule5.getProcessor());
 		assertEquals(2, rule5.getArguments().size());
+		assertEquals("value2", rule5.parseParams().get("arg2"));
 	}
 	
 	
