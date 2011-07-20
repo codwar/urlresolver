@@ -28,8 +28,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface Context {
 
-	public static final String METHOD_POST = "post";
-	public static final String METHOD_GET = "get";
+	public static final String METHOD_POST = "POST";
+	public static final String METHOD_GET = "GET";
 
 	public static final String WEB_APPLICATION_CONTEXT = "web-application-context";
 	
