@@ -5,9 +5,11 @@
 	<artifactId>urlresolver</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
+	
 	<scm>
-		<url>https://dahool@github.com/dahool/urlresolver.git</url>
+		<connection>scm:git:https://dahool@github.com/codwar/urlresolver.git</connection>
 	</scm>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>	
