@@ -3,3 +3,7 @@
 .project
 bin
 target
+.externalToolBuilders
+maven-eclipse.xml
+pom.xml.releaseBackup
+release.properties

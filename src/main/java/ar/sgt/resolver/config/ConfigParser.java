@@ -21,6 +21,7 @@ package ar.sgt.resolver.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,6 +33,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import ar.sgt.resolver.processor.ForwardProcessor;
+import ar.sgt.resolver.processor.PermanentRedirectProcessor;
 import ar.sgt.resolver.rule.Rule;
 
 /**
@@ -40,6 +42,8 @@ import ar.sgt.resolver.rule.Rule;
  */
 public class ConfigParser {
 
+	private static final Logger log = Logger.getLogger(ConfigParser.class.getName());
+	
 	private ResolverConfig config;
 
 	/**
@@ -58,6 +62,8 @@ public class ConfigParser {
 
 		NodeList processorList = doc.getElementsByTagName(RuleConstant.NODE_PROCESSOR);
 
+		log.fine("Listing " + processorList.getLength() + " processors.");
+		
 		for (int i = 0; i < processorList.getLength(); i++) {
 			Element node = (Element) processorList.item(i);
 			String controller = node.getAttribute(RuleConstant.ATT_CLASS);
@@ -66,10 +72,22 @@ public class ConfigParser {
 
 		NodeList forwardList = doc.getElementsByTagName(RuleConstant.NODE_FORWARDPROCESSOR);
 
+		log.fine("Listing " + forwardList.getLength() + " forward processors.");
+		
 		for (int i = 0; i < forwardList.getLength(); i++) {
 			Element node = (Element) forwardList.item(i);
 			String controller = ForwardProcessor.class.getName();
 			processProcessorNode(controller, node);
+		}
+		
+		NodeList redirectList = doc.getElementsByTagName(RuleConstant.NODE_REDIRECT);
+
+		log.fine("Listing " + redirectList.getLength() + " redirects.");
+		
+		for (int i = 0; i < redirectList.getLength(); i++) {
+			Element node = (Element) redirectList.item(i);
+			String controller = PermanentRedirectProcessor.class.getName();
+			processRedirectNode(controller, node);
 		}
 		
 		return this.config;
@@ -104,4 +122,17 @@ public class ConfigParser {
 		}
 	}
 
+	private void processRedirectNode(String controller, Element node) {
+
+		NodeList rules = node.getElementsByTagName(RuleConstant.NODE_RULE);
+
+		for (int i = 0; i < rules.getLength(); i++) {
+			Element ruleNode = (Element) rules.item(i);
+			Rule rule = this.config.addRule(controller, ruleNode.getAttribute(RuleConstant.ATT_PATTERN),
+											null, ruleNode.getAttribute(RuleConstant.ATT_REDIRECT));
+			processRuleArguments(rule, ruleNode);
+		}
+
+	}
+	
 }

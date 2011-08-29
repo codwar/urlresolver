@@ -3,39 +3,54 @@
 
 	<xs:element name="config">
 		<xs:complexType>
-		    <xs:choice minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="processor" type="processorType"/>
-				<xs:element name="forward-processor" type="fordwardProcessorType"/>
-		    </xs:choice>		
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="processor" type="processorType" />
+				<xs:element name="forward-processor" type="fordwardProcessorType" />
+				<xs:element name="redirect" type="redirectType" maxOccurs="1"/>
+			</xs:choice>
 		</xs:complexType>
 	</xs:element>
 
 	<xs:complexType name="fordwardProcessorType">
 		<xs:sequence maxOccurs="unbounded" minOccurs="1">
-			<xs:element name="rule" type="ruleType"/>
+			<xs:element name="rule" type="ruleType" />
 		</xs:sequence>
 		<xs:attribute name="redirect" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="processorType">
 		<xs:sequence maxOccurs="unbounded" minOccurs="1">
-			<xs:element name="rule" type="ruleType"/>
+			<xs:element name="rule" type="ruleType" />
 		</xs:sequence>
 		<xs:attribute name="class" type="xs:string" use="required" />
 		<xs:attribute name="redirect" type="xs:string" use="optional" />
 	</xs:complexType>
 
 	<xs:complexType name="ruleType">
-        <xs:sequence maxOccurs="unbounded" minOccurs="0">
-            <xs:element name="arg" type="argType"/>
-        </xs:sequence>	
+		<xs:sequence maxOccurs="unbounded" minOccurs="0">
+			<xs:element name="arg" type="argType" />
+		</xs:sequence>
 		<xs:attribute name="pattern" type="xs:string" use="required" />
 		<xs:attribute name="name" type="xs:string" use="optional" />
 	</xs:complexType>
 
-    <xs:complexType name="argType">
-        <xs:attribute name="name" type="xs:string" use="required" />
-        <xs:attribute name="value" type="xs:string" use="required" />
-    </xs:complexType>
-    
+	<xs:complexType name="argType">
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="value" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="redirectType">
+		<xs:sequence maxOccurs="unbounded" minOccurs="1">
+			<xs:element name="rule">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded" minOccurs="0">
+						<xs:element name="arg" type="argType" />
+					</xs:sequence>
+				<xs:attribute name="pattern" type="xs:string" use="required" />
+				<xs:attribute name="redirect" type="xs:string" use="required" />				
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
 </xs:schema>

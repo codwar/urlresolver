@@ -33,5 +33,7 @@ public interface RuleConstant {
 	public static final String ATT_NAME = "name";
 	public static final String ATT_REDIRECT = "redirect";
 	public static final String ATT_VALUE = "value";
+
+	public static final String NODE_REDIRECT = "redirect";
 	
 }

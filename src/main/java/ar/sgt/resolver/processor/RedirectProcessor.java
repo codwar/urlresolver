@@ -1,5 +1,5 @@
 /**
- *   Processor
+ *   RedirectProcessor
  *   Copyright(c) 2011 Sergio Gabriel Teves
  * 
  *   This file is part of UrlResolver.
@@ -28,6 +28,7 @@ import ar.sgt.resolver.exception.ProcessorException;
  * config or processor response.
  * Unlike ResponseProcessor this is a visible redirect instead of an internal forward.
  * Useful for actions that needs to redirect to another processor.
+ * This is a Temporal Redirect (302)
  */
 public abstract class RedirectProcessor implements Processor {
 

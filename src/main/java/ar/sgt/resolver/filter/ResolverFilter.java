@@ -73,7 +73,7 @@ public class ResolverFilter implements Filter {
 				req.setAttribute(RuleConstant.CURRENT_RULE, rule.getName());	
 			}
 			ResolverContext context = new ResolverContext(filterConfig.getServletContext(), req, resp, rule.parseParams(), req.getMethod());
-			ProcessorContext processorContext = new ProcessorContext(rule.getRedirect());
+			ProcessorContext processorContext = new ProcessorContext(rule, rule.getRedirect());
 			Processor processor;
 			try {
 				processor = loadClass(rule.getProcessor());

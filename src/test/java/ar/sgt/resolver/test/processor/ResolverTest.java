@@ -68,6 +68,8 @@ public class ResolverTest extends TestCase {
 		assertEquals(ForwardProcessor.class.getName(), rule5.getProcessor());
 		assertEquals(2, rule5.getArguments().size());
 		assertEquals("value2", rule5.parseParams().get("arg2"));
+		Rule rule6 = config.findRule("somepage.jsp?d=valor");
+		assertEquals("rule1", rule6.getRedirect());
 	}
 	
 	
