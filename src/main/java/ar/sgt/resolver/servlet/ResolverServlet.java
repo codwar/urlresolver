@@ -20,17 +20,19 @@
 package ar.sgt.resolver.servlet;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ar.sgt.resolver.config.ResolverConfig;
 import ar.sgt.resolver.listener.ContextLoader;
-import ar.sgt.resolver.processor.ResponseProcessor;
 import ar.sgt.resolver.processor.ResolverContext;
+import ar.sgt.resolver.processor.ResponseProcessor;
 import ar.sgt.resolver.rule.Rule;
 
 /**
@@ -44,7 +46,7 @@ public class ResolverServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -3919737317543290653L;
 
-	private static final Logger log = Logger.getLogger(ResolverServlet.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(ResolverServlet.class);
 	
 	private ResolverConfig resolverConfig;
 	private boolean appendBackSlash;
@@ -52,7 +54,7 @@ public class ResolverServlet extends HttpServlet {
 	
 	@Override
 	public void init() throws ServletException {
-		log.fine("Initializing servlet");
+		log.debug("Initializing servlet");
 		resolverConfig = (ResolverConfig) getServletContext().getAttribute(ContextLoader.RESOLVER_CONFIG);
 		appendBackSlash = getServletConfig().getInitParameter("append_backslash") != null ? Boolean.parseBoolean(getServletConfig().getInitParameter("append_backslash")) : true;
 		debug = getServletConfig().getInitParameter("debug") != null ? Boolean.parseBoolean(getServletConfig().getInitParameter("debug")) : false;
@@ -72,21 +74,21 @@ public class ResolverServlet extends HttpServlet {
 		if (appendBackSlash) {
 			if (!path.endsWith("/")) path = path + "/";
 		}
-		log.fine("Resolve path: " + path);
+		log.debug("Resolve path: " + path);
 		Rule rule = resolverConfig.findRule(path);
 		if (rule != null) {
-			log.fine("Found rule: " + rule.getProcessor());
+			log.debug("Found rule: " + rule.getProcessor());
 			ResolverContext context = new ResolverContext(getServletContext(), req, resp, rule.parseParams(), method);
 			ResponseProcessor processor;
 			try {
 				processor = loadClass(rule.getProcessor());
 				processor.doProcess(context);
 			} catch (Exception e) {
-				log.severe(e.getMessage());
+				log.error(e.getMessage());
 				throw new ServletException(e);
 			}
 		} else {
-			log.fine("No matching rule found");
+			log.debug("No matching rule found");
 			if (debug) {
 				throw new ServletException("No matching rule found for url " + path + "\n" + resolverConfig.toString());
 			} else {

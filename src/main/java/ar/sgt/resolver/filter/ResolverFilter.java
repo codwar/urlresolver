@@ -20,7 +20,6 @@
 package ar.sgt.resolver.filter;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -30,6 +29,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ar.sgt.resolver.config.ResolverConfig;
 import ar.sgt.resolver.config.RuleConstant;
@@ -42,7 +44,7 @@ import ar.sgt.resolver.rule.Rule;
 
 public class ResolverFilter implements Filter {
 
-	private static final Logger log = Logger.getLogger(ResolverFilter.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(ResolverFilter.class);
 	
 	private FilterConfig filterConfig;
 	private ResolverConfig resolverConfig;
@@ -50,7 +52,7 @@ public class ResolverFilter implements Filter {
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		log.fine("Initializing servlet");
+		log.debug("Initializing servlet");
 		this.resolverConfig = (ResolverConfig) filterConfig.getServletContext().getAttribute(ContextLoader.RESOLVER_CONFIG);
 		this.appendBackSlash = filterConfig.getInitParameter("append_backslash") != null ? Boolean.parseBoolean(filterConfig.getInitParameter("append_backslash")) : true;
 		this.filterConfig = filterConfig;
@@ -64,10 +66,10 @@ public class ResolverFilter implements Filter {
 		if (appendBackSlash) {
 			if (!path.endsWith("/")) path = path + "/";
 		}
-		log.fine("Resolve path: " + path);
+		log.debug("Resolve path: " + path);
 		Rule rule = resolverConfig.findRule(path);
 		if (rule != null) {
-			log.fine("Found rule: " + rule.getProcessor());
+			log.debug("Found rule: " + rule.getProcessor());
 			// put the current rule name in context to use it in url resolve
 			if (rule.getName() != null) {
 				req.setAttribute(RuleConstant.CURRENT_RULE, rule.getName());	
@@ -79,14 +81,14 @@ public class ResolverFilter implements Filter {
 				processor = loadClass(rule.getProcessor());
 				processor.process(processorContext, context);
 			} catch (HttpError e) {
-				log.fine("Handling HTTP ERROR");
+				log.debug("Handling HTTP ERROR");
 				resp.sendError(e.getHttpErrorCode());
 			} catch (Exception e) {
-				log.severe(e.getMessage());
+				log.error(e.getMessage());
 				throw new ServletException(e);
 			}
 		} else {
-			log.fine("No matching rule found");
+			log.debug("No matching rule found");
 			chain.doFilter(request, response);
 		}
 	}

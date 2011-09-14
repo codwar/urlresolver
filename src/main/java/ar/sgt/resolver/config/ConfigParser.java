@@ -19,14 +19,15 @@
  */
 package ar.sgt.resolver.config;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
+import java.io.InputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -42,7 +43,7 @@ import ar.sgt.resolver.rule.Rule;
  */
 public class ConfigParser {
 
-	private static final Logger log = Logger.getLogger(ConfigParser.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(ConfigParser.class);
 	
 	private ResolverConfig config;
 
@@ -53,16 +54,16 @@ public class ConfigParser {
 		this.config = new ResolverConfig();
 	}
 
-	public ResolverConfig parse(File file)
+	public ResolverConfig parse(InputStream is)
 			throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(file);
+		Document doc = dBuilder.parse(is);
 		doc.getDocumentElement().normalize();
 
 		NodeList processorList = doc.getElementsByTagName(RuleConstant.NODE_PROCESSOR);
 
-		log.fine("Listing " + processorList.getLength() + " processors.");
+		log.debug("Listing " + processorList.getLength() + " processors.");
 		
 		for (int i = 0; i < processorList.getLength(); i++) {
 			Element node = (Element) processorList.item(i);
@@ -72,7 +73,7 @@ public class ConfigParser {
 
 		NodeList forwardList = doc.getElementsByTagName(RuleConstant.NODE_FORWARDPROCESSOR);
 
-		log.fine("Listing " + forwardList.getLength() + " forward processors.");
+		log.debug("Listing " + forwardList.getLength() + " forward processors.");
 		
 		for (int i = 0; i < forwardList.getLength(); i++) {
 			Element node = (Element) forwardList.item(i);
@@ -82,7 +83,7 @@ public class ConfigParser {
 		
 		NodeList redirectList = doc.getElementsByTagName(RuleConstant.NODE_REDIRECT);
 
-		log.fine("Listing " + redirectList.getLength() + " redirects.");
+		log.debug("Listing " + redirectList.getLength() + " redirects.");
 		
 		for (int i = 0; i < redirectList.getLength(); i++) {
 			Element node = (Element) redirectList.item(i);

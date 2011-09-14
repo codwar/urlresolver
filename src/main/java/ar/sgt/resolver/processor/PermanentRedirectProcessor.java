@@ -22,9 +22,11 @@ package ar.sgt.resolver.processor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ar.sgt.resolver.config.ResolverConfig;
 import ar.sgt.resolver.exception.ProcessorException;
@@ -41,17 +43,16 @@ import ar.sgt.resolver.utils.UrlReverse;
  */
 public final class PermanentRedirectProcessor implements Processor {
 
-	private static final Logger log = Logger.getLogger(PermanentRedirectProcessor.class
-			.getName());
+	private static final Logger log = LoggerFactory.getLogger(PermanentRedirectProcessor.class);
 
 	@Override
 	public final void process(ProcessorContext processorContext,
 			ResolverContext context) throws ProcessorException {
-		log.fine("Entering processor");
+		log.debug("Entering processor");
 		String ruleName = processorContext.getRedirect();
 		Rule current = processorContext.getRule();
 		Map<String, String> params = new HashMap<String, String>();
-		log.finest("Processing params");
+		log.debug("Processing params");
 		for (Entry<String, String> args : current.getArguments().entrySet()) {
 			params.put(args.getKey(), context.getRequest().getParameter(args.getValue()));
 		}
@@ -60,7 +61,7 @@ public final class PermanentRedirectProcessor implements Processor {
 		UrlReverse reverse = new UrlReverse(resolver);
 		String url;
 		try {
-			log.fine("Resolve rule " + ruleName);
+			log.debug("Resolve rule " + ruleName);
 			url = reverse.resolve(ruleName, params);
 		} catch (RuleNotFoundException e) {
 			throw new ProcessorException(e);
@@ -68,7 +69,7 @@ public final class PermanentRedirectProcessor implements Processor {
 			throw new ProcessorException(e);
 		}
 		HttpServletResponse resp = context.getResponse();
-		log.fine("Permanent redirect to " + url);
+		log.debug("Permanent redirect to " + url);
 		resp.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
 		resp.setHeader("Location", url);
 	}

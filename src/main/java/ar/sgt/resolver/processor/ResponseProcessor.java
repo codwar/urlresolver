@@ -19,7 +19,9 @@
  */
 package ar.sgt.resolver.processor;
 
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ar.sgt.resolver.exception.ProcessorException;
 
@@ -30,25 +32,24 @@ import ar.sgt.resolver.exception.ProcessorException;
  */
 public abstract class ResponseProcessor implements Processor {
 
-	private static final Logger log = Logger.getLogger(ResponseProcessor.class
-			.getName());
+	private static final Logger log = LoggerFactory.getLogger(ResponseProcessor.class);
 
 	@Override
 	public final void process(ProcessorContext processorContext,
 			ResolverContext context) throws ProcessorException {
-		log.fine("Entering processor");
+		log.debug("Entering processor");
 		String resp = doProcess(context);
 		String redirect = resp != null ? resp : processorContext.getRedirect();
 		if (redirect != null) {
 			try {
-				log.fine("Fordward to " + redirect);
+				log.debug("Fordward to " + redirect);
 				context.getServletContext().getRequestDispatcher(redirect).forward(context.getRequest(), context.getResponse());
 			} catch (Exception e) {
-				log.severe(e.getMessage());
+				log.error(e.getMessage());
 				throw new ProcessorException(e);
 			}
 		} else {
-			log.fine("No redirect. Continue");
+			log.debug("No redirect. Continue");
 		}
 	}
 

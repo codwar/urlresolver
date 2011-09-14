@@ -19,7 +19,6 @@
  */
 package ar.sgt.resolver.test.processor;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -39,10 +38,9 @@ public class ResolverTest extends TestCase {
 	
 	@Override
 	protected void setUp() throws Exception {
-		File file = new File(this.getClass().getResource("/urlresolver.xml").getFile());
 		ConfigParser parser = new ConfigParser();
 		try {
-			this.config = parser.parse(file);
+			this.config = parser.parse(this.getClass().getResourceAsStream("/urlresolver.xml"));
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {

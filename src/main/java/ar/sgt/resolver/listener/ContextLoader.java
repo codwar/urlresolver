@@ -19,10 +19,11 @@
  */
 package ar.sgt.resolver.listener;
 
-import java.io.File;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ar.sgt.resolver.config.ConfigParser;
 import ar.sgt.resolver.config.ResolverConfig;
@@ -33,7 +34,7 @@ import ar.sgt.resolver.config.ResolverConfig;
  */
 public final class ContextLoader {
 
-	private static final Logger log = Logger.getLogger(ContextLoader.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(ContextLoader.class);
 	
 	public static final String RESOLVER_CONFIG = "RESOLVER_CONFIG";
 	public static final String APPEND_BACKSLASH = "APPEND_BACKSLASH";
@@ -48,10 +49,10 @@ public final class ContextLoader {
 	 */
 	public void initWebContext(ServletContext servletContext) {
 		String configFile = servletContext.getInitParameter(CONFIG_LOCATION_PARAM) != null ? servletContext.getInitParameter(CONFIG_LOCATION_PARAM) : DEFAULT_WEB_CONF_PATH;
-		log.fine("Loading config from " + configFile);
+		log.debug("Loading config from " + configFile);
 		ConfigParser configParser = new ConfigParser();
 		try {
-			resolverConfig = configParser.parse(new File(servletContext.getResource(configFile).getFile()));
+			resolverConfig = configParser.parse(servletContext.getResourceAsStream(configFile));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
