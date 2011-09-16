@@ -21,6 +21,7 @@ package ar.sgt.resolver.tag;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
@@ -51,7 +52,7 @@ public class UrlCleanTag extends BodyTagSupport {
 		try {
 			Rule rule = config.findByName(this.name);
 			if (rule != null) {
-				String html = RegexpHelper.normalize(rule.getPattern());
+				String html = ((HttpServletRequest) pageContext.getRequest()).getContextPath() + RegexpHelper.normalize(rule.getPattern());
 				if (this.var != null) {
 					pageContext.setAttribute(this.var, html);
 				} else {

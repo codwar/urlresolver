@@ -20,6 +20,9 @@
 package ar.sgt.resolver.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -51,6 +54,7 @@ public class ResolverFilter implements Filter {
 	private ResolverConfig resolverConfig;
 	private boolean appendBackSlash;	
 	private String root;
+	private Set<String> excludePath;
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -59,6 +63,11 @@ public class ResolverFilter implements Filter {
 		this.appendBackSlash = filterConfig.getInitParameter("append_backslash") != null ? Boolean.parseBoolean(filterConfig.getInitParameter("append_backslash")) : true;
 		this.root = filterConfig.getInitParameter("root");
 		this.filterConfig = filterConfig;
+		if (filterConfig.getInitParameter("exclude-path") != null) {
+			this.excludePath = new HashSet<String>(Arrays.asList(StringUtils.split(filterConfig.getInitParameter("exclude-path"),",")));
+		} else {
+			this.excludePath = null;
+		}
 	}
 
 	@Override
@@ -67,11 +76,19 @@ public class ResolverFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
 		String path = req.getRequestURI();
-		if (this.appendBackSlash) {
-			if (!path.endsWith("/")) path = path + "/";
-		}
 		if (this.root != null) {
 			path = StringUtils.removeStartIgnoreCase(path, this.root);
+		}
+		if (this.excludePath != null) {
+			String fp = StringUtils.left(path, path.indexOf("/",1));
+			if (this.excludePath.contains(fp)) {
+				log.debug("Skip path {}", path);
+				chain.doFilter(request, response);
+				return;
+			}
+		}
+		if (this.appendBackSlash) {
+			if (!path.endsWith("/")) path = path + "/";
 		}
 		log.debug("Resolve path: {}", path);
 		Rule rule = resolverConfig.findRule(path);
