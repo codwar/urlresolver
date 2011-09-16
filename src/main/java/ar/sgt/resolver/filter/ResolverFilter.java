@@ -30,6 +30,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,12 +50,14 @@ public class ResolverFilter implements Filter {
 	private FilterConfig filterConfig;
 	private ResolverConfig resolverConfig;
 	private boolean appendBackSlash;	
+	private String root;
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		log.debug("Initializing filter");
 		this.resolverConfig = (ResolverConfig) filterConfig.getServletContext().getAttribute(ContextLoader.RESOLVER_CONFIG);
 		this.appendBackSlash = filterConfig.getInitParameter("append_backslash") != null ? Boolean.parseBoolean(filterConfig.getInitParameter("append_backslash")) : true;
+		this.root = filterConfig.getInitParameter("root");
 		this.filterConfig = filterConfig;
 	}
 
@@ -64,13 +67,16 @@ public class ResolverFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
 		String path = req.getRequestURI();
-		if (appendBackSlash) {
+		if (this.appendBackSlash) {
 			if (!path.endsWith("/")) path = path + "/";
+		}
+		if (this.root != null) {
+			path = StringUtils.removeStartIgnoreCase(path, this.root);
 		}
 		log.debug("Resolve path: {}", path);
 		Rule rule = resolverConfig.findRule(path);
 		if (rule != null) {
-			log.debug("Found rule {} using processor {}", rule.getName(), rule.getProcessor());
+			log.debug("Found rule {} using processor {}", rule.getName() == null ? "Unnamed" : rule.getName(), rule.getProcessor());
 			if (rule.getName() != null) {
 				req.setAttribute(RuleConstant.CURRENT_RULE, rule.getName());	
 			}
