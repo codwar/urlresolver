@@ -42,7 +42,7 @@ public abstract class ResponseProcessor implements Processor {
 		String redirect = resp != null ? resp : processorContext.getRedirect();
 		if (redirect != null) {
 			try {
-				log.debug("Fordward to " + redirect);
+				log.debug("Fordward to {}", redirect);
 				context.getServletContext().getRequestDispatcher(redirect).forward(context.getRequest(), context.getResponse());
 			} catch (Exception e) {
 				log.error(e.getMessage());

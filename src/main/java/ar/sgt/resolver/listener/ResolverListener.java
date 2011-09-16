@@ -47,6 +47,7 @@ public class ResolverListener implements ServletContextListener {
 		log.debug("Initializing context");
 		this.contextLoader = createContextLoader();
 		this.contextLoader.initWebContext(sce.getServletContext());
+		log.debug("Context initialized");
 	}
 
 	/*
@@ -56,11 +57,10 @@ public class ResolverListener implements ServletContextListener {
 	 * ServletContextEvent)
 	 */
 	public void contextDestroyed(ServletContextEvent sce) {
-		log.debug("Context destroyed");
 		if (this.contextLoader != null) {
 			this.contextLoader.destroyWebContext(sce.getServletContext());
 		}
-
+		log.debug("Context destroyed");
 	}
 
 	protected ContextLoader createContextLoader() {

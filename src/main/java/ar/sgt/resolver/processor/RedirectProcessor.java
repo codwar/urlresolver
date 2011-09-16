@@ -44,7 +44,7 @@ public abstract class RedirectProcessor implements Processor {
 		String redirect = resp != null ? resp : processorContext.getRedirect();
 		if (redirect != null) {
 			try {
-				log.debug("Redirect to " + redirect);
+				log.debug("Redirect to {}", redirect);
 				context.getResponse().sendRedirect(context.getResponse().encodeRedirectURL(redirect));
 			} catch (Exception e) {
 				log.error(e.getMessage());

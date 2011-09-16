@@ -61,7 +61,7 @@ public final class PermanentRedirectProcessor implements Processor {
 		UrlReverse reverse = new UrlReverse(resolver);
 		String url;
 		try {
-			log.debug("Resolve rule " + ruleName);
+			log.debug("Resolve rule {}", ruleName);
 			url = reverse.resolve(ruleName, params);
 		} catch (RuleNotFoundException e) {
 			throw new ProcessorException(e);
@@ -69,7 +69,7 @@ public final class PermanentRedirectProcessor implements Processor {
 			throw new ProcessorException(e);
 		}
 		HttpServletResponse resp = context.getResponse();
-		log.debug("Permanent redirect to " + url);
+		log.debug("Permanent redirect to {}", url);
 		resp.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
 		resp.setHeader("Location", url);
 	}

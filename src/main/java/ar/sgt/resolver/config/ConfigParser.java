@@ -56,6 +56,7 @@ public class ConfigParser {
 
 	public ResolverConfig parse(InputStream is)
 			throws ParserConfigurationException, SAXException, IOException {
+		log.debug("Parsing resolver config");
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		Document doc = dBuilder.parse(is);
@@ -63,7 +64,7 @@ public class ConfigParser {
 
 		NodeList processorList = doc.getElementsByTagName(RuleConstant.NODE_PROCESSOR);
 
-		log.debug("Listing " + processorList.getLength() + " processors.");
+		log.debug("Listing {} processors.", processorList.getLength());
 		
 		for (int i = 0; i < processorList.getLength(); i++) {
 			Element node = (Element) processorList.item(i);
@@ -73,7 +74,7 @@ public class ConfigParser {
 
 		NodeList forwardList = doc.getElementsByTagName(RuleConstant.NODE_FORWARDPROCESSOR);
 
-		log.debug("Listing " + forwardList.getLength() + " forward processors.");
+		log.debug("Listing {} forward processors.", forwardList.getLength());
 		
 		for (int i = 0; i < forwardList.getLength(); i++) {
 			Element node = (Element) forwardList.item(i);
@@ -83,7 +84,7 @@ public class ConfigParser {
 		
 		NodeList redirectList = doc.getElementsByTagName(RuleConstant.NODE_REDIRECT);
 
-		log.debug("Listing " + redirectList.getLength() + " redirects.");
+		log.debug("Listing {} redirects.", redirectList.getLength());
 		
 		for (int i = 0; i < redirectList.getLength(); i++) {
 			Element node = (Element) redirectList.item(i);

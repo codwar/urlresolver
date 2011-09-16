@@ -49,12 +49,13 @@ public final class ContextLoader {
 	 */
 	public void initWebContext(ServletContext servletContext) {
 		String configFile = servletContext.getInitParameter(CONFIG_LOCATION_PARAM) != null ? servletContext.getInitParameter(CONFIG_LOCATION_PARAM) : DEFAULT_WEB_CONF_PATH;
-		log.debug("Loading config from " + configFile);
+		log.debug("Loading config from {}", configFile);
 		ConfigParser configParser = new ConfigParser();
 		try {
 			resolverConfig = configParser.parse(servletContext.getResourceAsStream(configFile));
+			log.debug("Config loaded");
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		servletContext.setAttribute(RESOLVER_CONFIG, resolverConfig);
 		servletContext.setAttribute(APPEND_BACKSLASH, servletContext.getInitParameter(APPEND_BACKSLASH) != null ? Boolean.parseBoolean(servletContext.getInitParameter(APPEND_BACKSLASH)) : true);
@@ -64,7 +65,7 @@ public final class ContextLoader {
 	 * @param servletContext
 	 */
 	public void destroyWebContext(ServletContext servletContext) {
-		// TODO Auto-generated method stub
+		log.debug("Web context destroyed");
 	}
 
 }

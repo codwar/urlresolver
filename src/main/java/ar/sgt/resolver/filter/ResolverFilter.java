@@ -52,7 +52,7 @@ public class ResolverFilter implements Filter {
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		log.debug("Initializing servlet");
+		log.debug("Initializing filter");
 		this.resolverConfig = (ResolverConfig) filterConfig.getServletContext().getAttribute(ContextLoader.RESOLVER_CONFIG);
 		this.appendBackSlash = filterConfig.getInitParameter("append_backslash") != null ? Boolean.parseBoolean(filterConfig.getInitParameter("append_backslash")) : true;
 		this.filterConfig = filterConfig;
@@ -60,17 +60,17 @@ public class ResolverFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+		log.trace("Entering filter processing");
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
 		String path = req.getRequestURI();
 		if (appendBackSlash) {
 			if (!path.endsWith("/")) path = path + "/";
 		}
-		log.debug("Resolve path: " + path);
+		log.debug("Resolve path: {}", path);
 		Rule rule = resolverConfig.findRule(path);
 		if (rule != null) {
-			log.debug("Found rule: " + rule.getProcessor());
-			// put the current rule name in context to use it in url resolve
+			log.debug("Found rule {} using processor {}", rule.getName(), rule.getProcessor());
 			if (rule.getName() != null) {
 				req.setAttribute(RuleConstant.CURRENT_RULE, rule.getName());	
 			}
@@ -81,7 +81,7 @@ public class ResolverFilter implements Filter {
 				processor = loadClass(rule.getProcessor());
 				processor.process(processorContext, context);
 			} catch (HttpError e) {
-				log.debug("Handling HTTP ERROR");
+				log.debug("Handling HTTP ERROR {}", e.getHttpErrorCode());
 				resp.sendError(e.getHttpErrorCode());
 			} catch (Exception e) {
 				log.error(e.getMessage());
@@ -100,6 +100,8 @@ public class ResolverFilter implements Filter {
 	}
 	
 	@Override
-	public void destroy() {}
+	public void destroy() {
+		log.debug("Filter destroyed");
+	}
 
 }
