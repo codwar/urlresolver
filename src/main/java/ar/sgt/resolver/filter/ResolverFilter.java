@@ -43,6 +43,7 @@ import ar.sgt.resolver.exception.HttpError;
 import ar.sgt.resolver.exception.ReverseException;
 import ar.sgt.resolver.exception.RuleNotFoundException;
 import ar.sgt.resolver.listener.ContextLoader;
+import ar.sgt.resolver.processor.PermanentRedirectProcessor;
 import ar.sgt.resolver.processor.Processor;
 import ar.sgt.resolver.processor.ProcessorContext;
 import ar.sgt.resolver.processor.ResolverContext;
@@ -104,16 +105,20 @@ public class ResolverFilter implements Filter {
 			String redirect = null;
 			if (rule.getRedirect() != null) {
 				// check first if there is a named rule matching
-				UrlReverse reverse = new UrlReverse(resolverConfig);
-				try {
-					redirect = req.getContextPath() + reverse.resolve(rule.getRedirect());
-					log.debug("Using named rule {}", rule.getRedirect());
-				} catch (ReverseException e) {
-					log.error(e.getMessage());
+				if (rule.getProcessor().equals(PermanentRedirectProcessor.class.getName())) {
 					redirect = rule.getRedirect();
-				} catch (RuleNotFoundException e) {
-					log.debug("Rule with name {} not found. Simple url redirect", rule.getRedirect());
-					redirect = rule.getRedirect();
+				} else {
+					UrlReverse reverse = new UrlReverse(resolverConfig);
+					try {
+						redirect = req.getContextPath() + reverse.resolve(rule.getRedirect());
+						log.debug("Using named rule {}", rule.getRedirect());
+					} catch (ReverseException e) {
+						log.error(e.getMessage());
+						redirect = rule.getRedirect();
+					} catch (RuleNotFoundException e) {
+						log.debug("Rule with name {} not found. Simple url redirect", rule.getRedirect());
+						redirect = rule.getRedirect();
+					}
 				}
 			}
 			ProcessorContext processorContext = new ProcessorContext(rule, redirect);

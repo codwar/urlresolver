@@ -62,7 +62,7 @@ public final class PermanentRedirectProcessor implements Processor {
 		String url;
 		try {
 			log.debug("Resolve rule {}", ruleName);
-			url = reverse.resolve(ruleName, params);
+			url = context.getRequest().getContextPath() + reverse.resolve(ruleName, params);
 		} catch (RuleNotFoundException e) {
 			throw new ProcessorException(e);
 		} catch (ReverseException e) {
