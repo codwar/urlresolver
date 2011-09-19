@@ -40,11 +40,14 @@ import org.slf4j.LoggerFactory;
 import ar.sgt.resolver.config.ResolverConfig;
 import ar.sgt.resolver.config.RuleConstant;
 import ar.sgt.resolver.exception.HttpError;
+import ar.sgt.resolver.exception.ReverseException;
+import ar.sgt.resolver.exception.RuleNotFoundException;
 import ar.sgt.resolver.listener.ContextLoader;
 import ar.sgt.resolver.processor.Processor;
 import ar.sgt.resolver.processor.ProcessorContext;
 import ar.sgt.resolver.processor.ResolverContext;
 import ar.sgt.resolver.rule.Rule;
+import ar.sgt.resolver.utils.UrlReverse;
 
 public class ResolverFilter implements Filter {
 
@@ -98,7 +101,22 @@ public class ResolverFilter implements Filter {
 				req.setAttribute(RuleConstant.CURRENT_RULE, rule.getName());	
 			}
 			ResolverContext context = new ResolverContext(filterConfig.getServletContext(), req, resp, rule.parseParams(), req.getMethod());
-			ProcessorContext processorContext = new ProcessorContext(rule, rule.getRedirect());
+			String redirect = null;
+			if (rule.getRedirect() != null) {
+				// check first if there is a named rule matching
+				UrlReverse reverse = new UrlReverse(resolverConfig);
+				try {
+					redirect = req.getContextPath() + reverse.resolve(rule.getRedirect());
+					log.debug("Using named rule {}", rule.getRedirect());
+				} catch (ReverseException e) {
+					log.error(e.getMessage());
+					redirect = rule.getRedirect();
+				} catch (RuleNotFoundException e) {
+					log.debug("Rule with name {} not found. Simple url redirect", rule.getRedirect());
+					redirect = rule.getRedirect();
+				}
+			}
+			ProcessorContext processorContext = new ProcessorContext(rule, redirect);
 			Processor processor;
 			try {
 				processor = loadClass(rule.getProcessor());
