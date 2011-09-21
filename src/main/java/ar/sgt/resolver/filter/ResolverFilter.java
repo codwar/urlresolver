@@ -84,7 +84,7 @@ public class ResolverFilter implements Filter {
 		if (this.excludePath != null) {
 			String fp = StringUtils.left(path, path.indexOf("/",1));
 			if (this.excludePath.contains(fp)) {
-				log.debug("Skip path {}", path);
+				log.trace("Skip path {}", path);
 				chain.doFilter(request, response);
 				return;
 			}

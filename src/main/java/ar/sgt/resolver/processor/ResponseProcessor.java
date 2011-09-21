@@ -20,10 +20,13 @@
 package ar.sgt.resolver.processor;
 
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ar.sgt.resolver.exception.ProcessorException;
+import ar.sgt.resolver.flow.ForceRedirect;
 
 /**
  * This processor implementation can handle automatic redirection based on
@@ -38,7 +41,19 @@ public abstract class ResponseProcessor implements Processor {
 	public final void process(ProcessorContext processorContext,
 			ResolverContext context) throws ProcessorException {
 		log.debug("Entering processor");
-		String resp = doProcess(context);
+		String resp;
+		try {
+			resp = doProcess(context);
+		} catch (ForceRedirect r) {
+			log.debug("Redirect to {}", r.getUrl());
+			try {
+				context.getResponse().sendRedirect(context.getResponse().encodeRedirectURL(r.getUrl()));
+			} catch (IOException e) {
+				log.error(e.getMessage());
+				throw new ProcessorException(e);
+			}
+			return;
+		}
 		String redirect = resp != null ? resp : processorContext.getRedirect();
 		if (redirect != null) {
 			try {
