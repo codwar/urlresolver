@@ -27,6 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ar.sgt.resolver.config.ResolverConfig;
 import ar.sgt.resolver.exception.ReverseException;
 import ar.sgt.resolver.exception.RuleNotFoundException;
@@ -39,6 +42,8 @@ public class UrlTag extends BodyTagSupport {
 	 * 
 	 */
 	private static final long serialVersionUID = -3538312691752045758L;
+	
+	private static Logger log = LoggerFactory.getLogger(UrlTag.class);
 	
 	private Map<String, String> params;
 	
@@ -56,17 +61,20 @@ public class UrlTag extends BodyTagSupport {
 		ResolverConfig config = (ResolverConfig) pageContext.getServletContext().getAttribute(ContextLoader.RESOLVER_CONFIG);
 		UrlReverse reverse = new UrlReverse(config);
 		try {
-			String html = ((HttpServletRequest) pageContext.getRequest()).getContextPath() + reverse.resolve(this.name, this.params);
+			String html = "#";
+			try {
+				html = ((HttpServletRequest) pageContext.getRequest()).getContextPath() + reverse.resolve(this.name, this.params);
+			} catch (RuleNotFoundException e) {
+				log.error(e.getMessage());
+			} catch (ReverseException e) {
+				log.error(e.getMessage());
+			}
 			if (this.var != null) {
 				pageContext.setAttribute(this.var, html);
 			} else {
 				pageContext.getOut().write(html);	
 			}
 		} catch (IOException e) {
-			throw new JspException(e);
-		} catch (RuleNotFoundException e) {
-			throw new JspException(e);
-		} catch (ReverseException e) {
 			throw new JspException(e);
 		}
 		return EVAL_PAGE;
