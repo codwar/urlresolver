@@ -19,8 +19,14 @@
  */
 package ar.sgt.resolver.rule;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.code.regexp.NamedMatcher;
 import com.google.code.regexp.NamedPattern;
@@ -31,6 +37,8 @@ import com.google.code.regexp.NamedPattern;
  */
 public final class Rule {
 
+	private static final Logger log = LoggerFactory.getLogger(Rule.class);
+	
 	private String processor;
 	private String pattern;
 	private String redirect;
@@ -67,7 +75,14 @@ public final class Rule {
 		Map<String, String> map = new HashMap<String, String>();
 		map.putAll(this.args);
 		if (this.matcher == null) return map;
-		map.putAll(this.matcher.namedGroups());
+		for (Entry<String, String> entry : this.matcher.namedGroups().entrySet()) {
+			try {
+				map.put(entry.getKey(), URLDecoder.decode(entry.getValue(), "UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				log.error(e.getMessage());
+			}
+		}
+		//map.putAll(this.matcher.namedGroups());
 		return map;
 	}
 
