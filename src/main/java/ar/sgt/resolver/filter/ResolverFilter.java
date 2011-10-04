@@ -78,8 +78,11 @@ public class ResolverFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
 		String path = req.getRequestURI();
-		if (!"/".equals(req.getContextPath())) {
+		if (!req.getContextPath().isEmpty()) {
 			path = StringUtils.removeStartIgnoreCase(path, req.getContextPath());
+		}
+		if (path.startsWith("//")) {
+			path = path.substring(1);
 		}
 		if (this.excludePath != null) {
 			String fp = StringUtils.left(path, path.indexOf("/",1));
@@ -109,12 +112,12 @@ public class ResolverFilter implements Filter {
 					UrlReverse reverse = new UrlReverse(resolverConfig);
 					try {
 						redirect = req.getContextPath() + reverse.resolve(rule.getRedirect());
-						log.debug("Using named rule {}", rule.getRedirect());
+						log.trace("Using named rule {}", rule.getRedirect());
 					} catch (ReverseException e) {
 						log.error(e.getMessage());
 						redirect = rule.getRedirect();
 					} catch (RuleNotFoundException e) {
-						log.debug("Rule with name {} not found. Simple url redirect", rule.getRedirect());
+						log.trace("Rule with name {} not found. Simple url redirect", rule.getRedirect());
 						redirect = rule.getRedirect();
 					}
 				}
@@ -132,7 +135,7 @@ public class ResolverFilter implements Filter {
 				throw new ServletException(e);
 			}
 		} else {
-			log.debug("No matching rule found");
+			log.trace("No matching rule found");
 			chain.doFilter(request, response);
 		}
 	}
