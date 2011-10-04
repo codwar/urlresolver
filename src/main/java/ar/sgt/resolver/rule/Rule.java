@@ -20,13 +20,14 @@
 package ar.sgt.resolver.rule;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import ar.sgt.resolver.utils.ResolverUtils;
 
 import com.google.code.regexp.NamedMatcher;
 import com.google.code.regexp.NamedPattern;
@@ -77,12 +78,11 @@ public final class Rule {
 		if (this.matcher == null) return map;
 		for (Entry<String, String> entry : this.matcher.namedGroups().entrySet()) {
 			try {
-				map.put(entry.getKey(), URLDecoder.decode(entry.getValue(), "UTF-8"));
+				map.put(entry.getKey(), ResolverUtils.decodeUrl(entry.getValue()));
 			} catch (UnsupportedEncodingException e) {
 				log.error(e.getMessage());
 			}
 		}
-		//map.putAll(this.matcher.namedGroups());
 		return map;
 	}
 
@@ -118,4 +118,5 @@ public final class Rule {
 	public Map<String, String> getArguments() {
 		return this.args;
 	}
+
 }
