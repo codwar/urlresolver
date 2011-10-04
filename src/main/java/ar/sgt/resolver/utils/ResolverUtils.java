@@ -23,10 +23,9 @@ import java.io.UnsupportedEncodingException;
 public class ResolverUtils {
 
 	/**
-	 * URLDecoder.decode replace the plus sign (+) with a space.
-	 * This is quite bull shit, this function do not replace any char except by the entities %xx
+	 * URLDecoder.decode replace %2B with a space.
+	 * This function use the corresponding (+) plus sign for %2B.
 	 * It use UTF-8 as default.
-	 * 
 	 * @throws UnsupportedEncodingException 
 	 */
 	public static String decodeUrl(String s) throws UnsupportedEncodingException {
