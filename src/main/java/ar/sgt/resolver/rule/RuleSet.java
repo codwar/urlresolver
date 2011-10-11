@@ -19,7 +19,7 @@
  */
 package ar.sgt.resolver.rule;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -31,7 +31,7 @@ public final class RuleSet {
 	public Map<String, Rule> rules; 
 	
 	public RuleSet() {
-		this.rules = new HashMap<String, Rule>();
+		this.rules = new LinkedHashMap<String, Rule>();
 	}
 
 	public Rule addRule(String processor, String path, String name, String redirect) {
