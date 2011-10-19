@@ -22,6 +22,7 @@ package ar.sgt.resolver.config;
 public interface RuleConstant {
 
 	public static final String CURRENT_RULE = "current_rule";
+	public static final String CURRENT_PATH = "current_path";
 	
 	public static final String NODE_PROCESSOR = "processor";
 	public static final String NODE_FORWARDPROCESSOR = "forward-processor";

@@ -100,7 +100,8 @@ public class ResolverFilter implements Filter {
 		if (rule != null) {
 			log.debug("Found rule {} using processor {}", rule.getName() == null ? "Unnamed" : rule.getName(), rule.getProcessor());
 			if (rule.getName() != null) {
-				req.setAttribute(RuleConstant.CURRENT_RULE, rule.getName());	
+				req.setAttribute(RuleConstant.CURRENT_RULE, rule.getName());
+				req.setAttribute(RuleConstant.CURRENT_PATH, path);
 			}
 			ResolverContext context = new ResolverContext(filterConfig.getServletContext(), req, resp, rule.parseParams(), req.getMethod());
 			String redirect = null;
