@@ -54,6 +54,14 @@ public final class UrlReverse {
 		return resolve(name, Collections.<String,String>emptyMap());
 	}
 
+	public String resolve(String name, Entry<String, String>[] params) throws RuleNotFoundException, ReverseException {
+		Map<String, String> m = new HashMap<String, String>();
+		for (Entry<String, String> e : params) {
+			m.put(e.getKey(), e.getValue());
+		}
+		return resolve(name, m);
+	}
+	
 	public String resolve(String name, Map<String, String> params) throws RuleNotFoundException, ReverseException {
 		Rule rule = this.config.findByName(name);
 		if (rule == null) throw new RuleNotFoundException("Unable to find a rule for name: " + name);
