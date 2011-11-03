@@ -6,7 +6,7 @@
 	<packaging>jar</packaging>
 
 	<scm>
-		<connection>scm:git:https://dahool@github.com/codwar/urlresolver.git</connection>
+		<connection>scm:git:ssh://git@github.com/codwar/urlresolver.git</connection>
 	</scm>
 
 	<properties>
@@ -51,7 +51,7 @@
 			<version>1.2</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 	</dependencies>
 	<build>
 		<resources>
@@ -80,5 +80,32 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<extensions>
+			<extension>
+				<groupId>ar.com.synergian</groupId>
+				<artifactId>wagon-git</artifactId>
+				<version>0.1.4</version>
+			</extension>
+		</extensions>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>synergian-repo</id>
+			<url>https://raw.github.com/synergian/wagon-git/releases</url>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>codwar-repo</id>
+			<name>Codwar Repository</name>
+			<url>git:releases://git@github.com:codwar/maven-repo.git</url>
+		</repository>
+		<snapshotRepository>
+			<id>codwar-repo</id>
+			<name>Codwar Repository</name>
+			<url>git:snapshots://git@github.com:codwar/maven-repo.git</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
