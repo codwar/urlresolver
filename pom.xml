@@ -67,7 +67,7 @@
 				<version>2.2.1</version>
 				<configuration>
 					<tagNameFormat>v@{project.version}</tagNameFormat>
-					<pushChanges>false</pushChanges>
+					<pushChanges>true</pushChanges>
 				</configuration>
 			</plugin>
 			<plugin>
