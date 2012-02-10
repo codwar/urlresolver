@@ -29,8 +29,8 @@ public class ForceRedirect extends ProcessorException {
 	
 	private String url;
 	
-	public ForceRedirect(String url) {
-		this.url = url;
+	public ForceRedirect(String contextPath, String url) {
+		this.url = contextPath + url;
 	}
 
 	public String getUrl() {
